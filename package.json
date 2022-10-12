@@ -1,0 +1,63 @@
+{
+  "name": "my-portfolio",
+  "version": "0.1.0",
+  "homepage": "https://melanga.github.io",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "framer-motion": "^5.5.5",
+    "react": "^17.0.2",
+    "react-burger-menu": "^3.0.6",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-responsive": "^9.0.0-beta.5",
+    "react-scripts": "^5.0.0",
+    "react-scroll": "^1.8.4",
+    "styled-components": "^5.3.3",
+    "twin.macro": "^2.8.2",
+    "web-vitals": "^2.1.2"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "styled-components"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "babel-plugin-styled-components": "^2.0.2",
+    "gh-pages": "^4.0.0",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.5"
+  },
+  "resolutions": {
+    "styled-components": "^5"
+  }
+}
