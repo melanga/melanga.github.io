@@ -77,7 +77,7 @@ const OutlinedTextSvg = styled.svg`
 
 const DescriptionText = styled(motion.div)`
   ${tw`
-    text-lg text-white text-opacity-80 mt-6 sm:mt-10 2xl:mt-20 max-w-lg 2xl:max-w-xl mr-4 sm:ml-1.5
+    text-base md:text-lg text-white text-opacity-80 mt-2 sm:mt-10 2xl:mt-20 max-w-lg 2xl:max-w-xl mr-4 sm:ml-1.5
   `}
 `;
 
@@ -136,9 +136,9 @@ const TopSection = ({ isTablet }) => {
             </OutlinedTextSvg>
           </FloatingText>
           <DescriptionText variants={animationProps}>
-            I'm Melanga Bhathiya and I am currently an undergraduate at the Uva
-            Wellassa University of Sri Lanka pursuing my special degree in
-            Industrial Information Technology(BIIT).
+            I'm Melanga Dissanayake, an undergraduate at the Uva
+            Wellassa University of Sri Lanka pursuing my B.Sc. (Hons) in
+            Industrial Information Technology.
           </DescriptionText>
         </InfoSection>
         <ViewMoreButton

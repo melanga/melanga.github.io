@@ -22,11 +22,11 @@ const Technology = tw(motion.div)`
 `;
 
 const TecIcon = tw.div`
-  text-white text-lg pr-4 
+  text-white text-sm pr-4 md:text-lg
 `;
 
 const TecName = tw.p`
-  text-lg text-white border-b-2 border-b-cyan-500 
+  text-sm md:text-lg text-white border-b-2 border-b-cyan-500 
 `;
 
 const TechDetails = [

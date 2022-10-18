@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 const ProjectsWrapper = styled.div`
   ${tw`
-    p-4 flex flex-col justify-evenly relative w-full height[400px] 2xl:height[auto] bg-red-800/50 border-radius[10px]
+    p-4 flex flex-col justify-evenly relative w-full height[400px] 2xl:height[auto] bg-black/30 border-radius[10px]
   `}
   // tailwind styles were added dynamically
   ${({ imgLeft }) => (imgLeft ? tw`sm:flex-row` : tw`sm:flex-row-reverse`)}
@@ -35,7 +35,7 @@ const ProjectImg = tw.img`
 
 const ProjectCard = styled.div`
   ${tw`
-    width[500px] p-3 bg-gradient-to-l from-purple-800 to-cyan-700 border-radius[10px] absolute top[40%] shadow-2xl
+    width[500px] p-3 bg-gradient-to-l from-blue-800 to-cyan-700 border-radius[10px] absolute top[40%] shadow-2xl
   `}
   ${({ imgLeft }) =>
     imgLeft
@@ -45,18 +45,18 @@ const ProjectCard = styled.div`
 
 const ProjectDetails = styled.div`
   ${tw`
-    flex flex-col pt-12 flex[40%] 
+    flex flex-col pt-12 flex[40%] text-sm sm:text-base
   `}
   ${({ imgLeft }) => (imgLeft ? tw`justify-items-end` : tw`justify-start`)}
 `;
 
 const ProjectTitle = styled.h2`
   ${tw`
-    text-white text-2xl font-bold text-align[end] sm:position[unset]
+    text-white text-xl font-bold text-align[end] sm:position[unset]
  `}
   ${({ imgLeft }) =>
     imgLeft
-      ? tw`absolute top-10 left-6 `
+      ? tw`absolute top-10 left-6 sm:text-align[end] text-align[start]`
       : tw`absolute top-10 right-6 sm:text-align[start] text-align[end]`}
 `;
 
@@ -101,6 +101,7 @@ export default function ProjectWidget({
   description,
   technologies,
   projectImg,
+  gitHubUrl,
   imgLeft,
 }) {
   const isMobile = useMediaQuery({ maxWidth: deviceSize.mobile });
@@ -115,8 +116,8 @@ export default function ProjectWidget({
         </ProjectTechnologies>
         <ProjectDescription imgLeft={imgLeft}>{description}</ProjectDescription>
         <ProjectLinksWrapper imgLeft={imgLeft}>
-          <FiGithub />
-          <FiLink />
+          <a href={gitHubUrl}><FiGithub/></a>
+          <a href={gitHubUrl}><FiLink /></a>
         </ProjectLinksWrapper>
       </ProjectsWrapper>
     );
@@ -139,8 +140,8 @@ export default function ProjectWidget({
           </ProjectDescription>
         </ProjectCard>
         <ProjectLinksWrapper imgLeft={imgLeft}>
-          <FiGithub />
-          <FiLink />
+          <a href={gitHubUrl}><FiGithub /></a>
+          <a href={gitHubUrl}><FiLink /> </a>
         </ProjectLinksWrapper>
       </ProjectsWrapper>
     );

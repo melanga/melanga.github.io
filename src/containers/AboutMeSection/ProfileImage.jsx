@@ -8,7 +8,7 @@ const ImgDiv = tw(motion.div)`
 `;
 
 const ImageWrapper = tw.div`
-    ml-12 mt-12 block after:absolute after:left-16 after:top-4 after:border-cyan-500
+    ml-2 md:ml-12 mt-2 md:mt-12 block after:absolute after:left-16 after:top-4 after:border-cyan-500
     after:border-4 after:border-radius[10px] 
     after:width[200px] after:height[200px]
     width[200px] height[200px]
@@ -17,7 +17,7 @@ const ImageWrapper = tw.div`
 
 const ProfileImg = tw(motion.img)`
     relative
-    width[100] height[100] border-radius[10px] z-10
+    width[200] height[200] border-radius[10px] z-10
 `;
 
 export const ProfileImage = ({ variants }) => {

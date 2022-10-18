@@ -1,22 +1,21 @@
 import React from "react";
-import styled from "styled-components";
 import tw from "twin.macro";
 
 const ContactMeSectionWrapper = tw.div`
-    w-full flex h-screen bg-gradient-to-r from-violet-500 to-fuchsia-500 justify-center
+    w-full flex h-screen bg-gradient-to-r from-violet-500 to-fuchsia-500 justify-center items-center
 `;
 
 const ContentWrapper = tw.div`
-    self-center flex flex-col height[70%] width[max-content] p-10 justify-center max-w-3xl gap-6
+    mx-4 flex flex-col height[70%] width[max-content] p-4 sm:p-10 justify-center max-w-3xl gap-6
     bg-opacity-10 bg-purple-800 border-radius[10px]
 `;
 
 const TitleText = tw.h1`
-    text-4xl font-black text-center text-yellow-50
+    text-2xl sm:text-4xl font-black text-center text-yellow-50
 `;
 
 const Message = tw.p`
-    text-lg font-medium tracking-wider text-center text-white
+    text-base md:text-lg font-medium tracking-wider text-center text-white
 `;
 
 const MailButton = tw.a`
