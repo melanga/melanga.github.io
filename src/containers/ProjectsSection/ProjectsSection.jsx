@@ -5,7 +5,7 @@ import { Project1Data, Project2Data, Project3Data } from "./ProjectsDetails";
 import ProjectWidget from "./ProjectWidget";
 
 const ProjectsSectionContainer = tw.div`
-    w-full flex bg-gradient-to-r from-blue-900 to-cyan-500 justify-center
+  border-t-2 border-cyan-500 w-full flex bg-gradient-to-r from-blue-900 to-cyan-500 justify-center
 `;
 
 const ContentWrapper = tw.div`

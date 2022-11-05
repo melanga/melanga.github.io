@@ -2,7 +2,7 @@ import React from "react";
 import tw from "twin.macro";
 
 const ContactMeSectionWrapper = tw.div`
-    w-full flex h-screen bg-gradient-to-r from-violet-500 to-fuchsia-500 justify-center items-center
+    border-t-2 border-cyan-500  w-full flex h-screen bg-gradient-to-r from-blue-900 to-cyan-500 justify-center items-center
 `;
 
 const ContentWrapper = tw.div`

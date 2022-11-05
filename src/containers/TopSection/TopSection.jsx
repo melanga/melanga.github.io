@@ -1,5 +1,6 @@
 import React from "react";
 import tw from "twin.macro";
+import Typed from "typed.js";
 import styled from "styled-components";
 import backgroundImage from "../../images/background_image.jpeg";
 import NavBar from "../../components/NavBar";
@@ -88,6 +89,33 @@ const ViewMoreButton = styled(motion.button)`
 `;
 
 const TopSection = ({ isTablet }) => {
+  // Create reference to store the DOM element containing the animation
+	const el = React.useRef(null);
+  // Create reference to store the Typed instance itself
+	const typed = React.useRef(null);
+
+  React.useEffect(() => {
+    const options = {
+    	strings: [
+        'Developer',
+        'Enthusiast',
+        'Programmer',
+      ],
+      typeSpeed: 50,
+      backSpeed: 50,
+      loop: true,
+    };
+    
+    // elRef refers to the <span> rendered below
+    typed.current = new Typed(el.current, options);
+    
+    return () => {
+      // Make sure to destroy Typed instance during cleanup
+      // to prevent memory leaks
+      typed.current.destroy();
+    }
+  }, [])
+
   const animationProps = {
     hidden: { opacity: 0, y: -20 },
     show: {
@@ -132,7 +160,7 @@ const TopSection = ({ isTablet }) => {
           </FloatingText>
           <FloatingText variants={animationProps}>
             <OutlinedTextSvg>
-              <text>Developer.</text>
+              <text ref={el}></text>
             </OutlinedTextSvg>
           </FloatingText>
           <DescriptionText variants={animationProps}>
