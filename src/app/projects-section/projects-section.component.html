@@ -1,0 +1,19 @@
+<section
+  id="Projects"
+  class="border-t-2 border-cyan-500 w-full flex bg-gradient-to-r from-blue-900 to-cyan-500 justify-center"
+>
+  <div class="flex flex-col self-center lg:max-w-[1000px] 2xl:max-w-[1200px] h-full mt-12 mb-12 mx-4 sm:mx-12 rounded-[10px] relative w-full gap-4 sm:gap-16">
+    <div appScrollAnimate animation="fade-up">
+      <app-header-text text="Projects" />
+    </div>
+    @for (project of projects; track project.id; let i = $index) {
+      <div
+        appScrollAnimate
+        [animation]="i % 2 === 0 ? 'slide-left' : 'slide-right'"
+        [animationDelay]="'100ms'"
+      >
+        <app-project-widget [project]="project" [imgLeft]="i % 2 === 0" />
+      </div>
+    }
+  </div>
+</section>

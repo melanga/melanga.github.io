@@ -1,0 +1,64 @@
+<nav
+  class="w-[90%] flex h-20 pl-6 pr-6 pt-4 border-b-2 border-gray-200 border-opacity-50 items-center self-center"
+>
+  <app-logo />
+  <div class="list-none w-full h-auto md:h-full flex md:ml-20 justify-end items-center">
+    @if (isMobile()) {
+      <button
+        type="button"
+        class="absolute w-5 h-5 right-[42px] top-[35px] text-white md:hidden"
+        (click)="toggleMenu()"
+        aria-label="Toggle menu"
+      >
+        @if (menuOpen()) {
+          <span class="text-2xl leading-none">&times;</span>
+        } @else {
+          <span class="flex flex-col gap-1">
+            <span class="block w-5 h-0.5 bg-white"></span>
+            <span class="block w-5 h-0.5 bg-white"></span>
+            <span class="block w-5 h-0.5 bg-white"></span>
+          </span>
+        }
+      </button>
+      @if (menuOpen()) {
+        <div
+          class="fixed inset-0 z-40 md:hidden"
+          (click)="closeMenu()"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="fixed top-0 right-0 w-[80%] h-[70%] m-2.5 border border-[rgba(33,0,33,0.98)] rounded-[10px] z-50 bg-[rgba(38,0,55,0.98)] p-6 pt-10 md:hidden"
+        >
+          <div class="flex flex-col gap-4 pt-4">
+            @for (item of navItems; track item.anchorId) {
+              <a
+                [attr.href]="'#' + item.anchorId"
+                [anchorId]="item.anchorId"
+                appScrollTo
+                (click)="closeMenu()"
+                class="text-white font-medium text-lg hover:text-gray-300 transition-colors duration-300 cursor-pointer"
+              >
+                {{ item.label }}
+              </a>
+            }
+          </div>
+        </div>
+      }
+    } @else {
+      <ul class="list-none w-full h-full flex md:ml-20 justify-end items-center">
+        @for (item of navItems; track item.anchorId) {
+          <li class="mr-8 flex items-center justify-center min-h-full text-white cursor-pointer font-medium text-lg sm:text-base transition-colors duration-300 hover:text-gray-300 box-content mb-4 sm:mb-0">
+            <a
+              [attr.href]="'#' + item.anchorId"
+              [anchorId]="item.anchorId"
+              appScrollTo
+              class="text-white hover:text-gray-300"
+            >
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</nav>

@@ -1,0 +1,55 @@
+<div class="w-full flex h-screen">
+  <section
+    class="top-section-landing w-full h-screen flex flex-col justify-items-center bg-cover bg-[bottom_10%_left] bg-no-repeat"
+    style="background-image: linear-gradient(to left, #6e15801d, #114264), url('assets/images/background_image.jpeg'); background-blend-mode: overlay;"
+  >
+    <app-navbar />
+    <div class="absolute top-[150px] left-4 sm:right-40 sm:left-auto 2xl:right-40 2xl:top-[180px]">
+      <p
+        appScrollAnimate animation="fade-up-slight" animationDelay="200ms"
+        class="m-0 font-black text-white sm:mb-2 text-[60px] leading-[60px] sm:text-[80px] sm:leading-[70px] md:text-[100px] md:leading-[80px] lg:text-[125px] lg:leading-[100px] 2xl:text-[145px] 2xl:leading-[130px] font-['Ubuntu'] flex items-center"
+      >
+        Hi,
+      </p>
+      <p
+        appScrollAnimate animation="fade-up-slight" animationDelay="400ms"
+        class="m-0 font-black text-white sm:mb-2 text-[60px] leading-[60px] sm:text-[80px] sm:leading-[70px] md:text-[100px] md:leading-[80px] lg:text-[125px] lg:leading-[100px] 2xl:text-[145px] 2xl:leading-[130px] font-['Ubuntu'] flex items-center inline-flex"
+      >
+        I'm&nbsp;
+      </p>
+      <p
+        appScrollAnimate animation="fade-up-slight" animationDelay="600ms"
+        class="m-0 font-black sm:mb-2 text-[60px] leading-[60px] sm:text-[80px] sm:leading-[70px] md:text-[100px] md:leading-[80px] lg:text-[125px] lg:leading-[100px] 2xl:text-[145px] 2xl:leading-[130px] font-['Ubuntu'] flex items-center inline-flex text-cyan-400"
+      >
+        Melanga
+      </p>
+      <p
+        appScrollAnimate animation="fade-up-slight" animationDelay="800ms"
+        class="m-0 font-black text-white sm:mb-2 text-[60px] leading-[60px] sm:text-[80px] sm:leading-[70px] md:text-[100px] md:leading-[80px] lg:text-[125px] lg:leading-[100px] 2xl:text-[145px] 2xl:leading-[130px] font-['Ubuntu'] flex items-center"
+      >
+        <span
+          #typedTarget
+          class="typed-outline inline-block w-fit sm:w-auto min-h-[70px] sm:min-h-[100px] sm:mt-1 2xl:mt-4"
+        ></span>
+      </p>
+      <p
+        appScrollAnimate animation="fade-in" animationDelay="1000ms"
+        class="text-base md:text-lg text-white/80 mt-2 sm:mt-10 2xl:mt-20 max-w-lg 2xl:max-w-xl mr-4 sm:ml-1.5"
+      >
+        I'm Melanga Dissanayake, an undergraduate at the Uva Wellassa University of Sri Lanka pursuing my B.Sc. (Hons) in Industrial Information Technology.
+      </p>
+    </div>
+    <a
+      href="#About"
+      anchorId="About"
+      appScrollTo
+      appScrollAnimate animation="fade-in" animationDelay="1200ms"
+      class="absolute bottom-6 self-center text-white text-4xl hover:scale-110 hover:text-cyan-400 transition-all duration-300 active:scale-90"
+      aria-label="Scroll to About"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+      </svg>
+    </a>
+  </section>
+</div>

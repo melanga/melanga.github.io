@@ -1,64 +1,52 @@
 {
-  "name": "my-portfolio",
-  "version": "0.1.0",
+  "name": "angular-portfolio",
+  "version": "0.0.0",
   "homepage": "https://melanga.github.io",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "framer-motion": "^5.5.5",
-    "react": "^17.0.2",
-    "react-burger-menu": "^3.0.6",
-    "react-dom": "^17.0.2",
-    "react-icons": "^4.3.1",
-    "react-responsive": "^9.0.0-beta.5",
-    "react-scripts": "^5.0.1",
-    "react-scroll": "^1.8.4",
-    "styled-components": "^5.3.3",
-    "twin.macro": "^2.8.2",
-    "typed.js": "^2.0.12",
-    "web-vitals": "^2.1.2"
-  },
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
-  "babelMacros": {
-    "twin": {
-      "preset": "styled-components"
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "private": true,
+  "packageManager": "npm@11.7.0",
+  "dependencies": {
+    "@angular/cdk": "^21.1.5",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ng-icons/core": "^33.1.0",
+    "@ng-icons/simple-icons": "^33.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "typed.js": "^3.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.0",
-    "babel-plugin-styled-components": "^2.0.2",
-    "gh-pages": "^4.0.0",
-    "postcss": "^8.4.5",
-    "tailwindcss": "^3.0.5"
-  },
-  "resolutions": {
-    "styled-components": "^5"
+    "@angular/build": "^21.1.4",
+    "@angular/cli": "^21.1.4",
+    "@angular/compiler-cli": "^21.1.0",
+    "@types/typed.js": "^2.0.0",
+    "autoprefixer": "^10.4.24",
+    "jsdom": "^27.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
   }
 }

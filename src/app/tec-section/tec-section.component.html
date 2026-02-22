@@ -1,0 +1,13 @@
+<div class="grid grid-cols-2 sm:grid-cols-3 ml-6 gap-y-6">
+  @for (item of techDetails; track item.name; let i = $index) {
+    <div
+      appScrollAnimate animation="fade-up-slight" [animationDelay]="staggerDelay(i)"
+      class="flex flex-row justify-start items-center gap-3 hover:scale-110 transition-transform duration-200 origin-left cursor-default"
+    >
+      <div class="text-cyan-200 text-lg md:text-xl flex items-center justify-center">
+        <ng-icon [name]="item.icon" size="24" />
+      </div>
+      <p class="text-sm md:text-lg text-white border-b-2 border-b-cyan-500">{{ item.name }}</p>
+    </div>
+  }
+</div>

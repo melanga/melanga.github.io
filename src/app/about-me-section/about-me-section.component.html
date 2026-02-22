@@ -1,0 +1,33 @@
+<section
+  id="About"
+  class="w-full flex md:min-h-screen justify-center bg-gradient-to-r from-blue-900 to-cyan-500"
+>
+  <div class="flex flex-col self-center lg:max-w-[1000px] 2xl:max-w-[1200px] sm:h-[80%] h-full mt-12 mb-12 mx-4 sm:mx-12 bg-purple-800/10 rounded-[10px] sm:p-3">
+    <div appScrollAnimate animation="fade-up">
+      <app-header-text text="About Me" />
+    </div>
+    <div class="self-center flex w-full md:flex-row flex-col p-6">
+      <div
+        appScrollAnimate animation="slide-left" animationDelay="200ms"
+        class="h-full md:flex-[20%] flex-[40%] justify-start relative pr-8"
+      >
+        <app-profile-image />
+      </div>
+      <div class="h-auto mt-12 flex-[60%] 2xl:flex-[70%] justify-start border-l-4 border-solid border-l-cyan-200">
+        <div
+          appScrollAnimate animation="fade-up-slight" animationDelay="300ms"
+          class="justify-start pt-12 pl-6 pb-8"
+        >
+          <p class="text-base sm:text-lg md:text-lg text-white">
+            I'm Melanga Dissanayake and I am currently an undergraduate at the Uva Wellassa University of Sri Lanka pursuing my B.Sc. (Hons) in Industrial Information Technology.
+            <br /><br />
+            Software Engineering | Machine Learning | Mobile App Development are my interesting areas of study.
+          </p>
+        </div>
+        <div appScrollAnimate animation="fade-up" animationDelay="400ms">
+          <app-tec-section />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

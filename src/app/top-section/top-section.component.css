@@ -1,0 +1,10 @@
+.top-section-landing {
+  background-size: cover;
+  background-position: bottom 10% left;
+}
+
+.typed-outline {
+  -webkit-text-stroke: 1px white;
+  color: transparent;
+  text-shadow: 0 0 0 rgba(255, 255, 255, 0.5);
+}

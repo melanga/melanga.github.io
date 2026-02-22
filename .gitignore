@@ -10,6 +10,11 @@
 
 # production
 /build
+/dist
+.angular
+
+# Angular cache
+angular-portfolio
 
 # misc
 .DS_Store
