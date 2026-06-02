@@ -62,7 +62,7 @@ export class SpringAnimateDirective implements OnInit, OnDestroy {
       transform: this.buildTransform(initial),
     });
 
-    if (this.springImmediate()) {
+    if (this.springImmediate() || typeof IntersectionObserver === 'undefined') {
       this.runAnimation();
       return;
     }

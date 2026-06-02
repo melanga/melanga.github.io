@@ -1,10 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
   });
 
@@ -20,7 +23,7 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-top-section')).toBeTruthy();
-    expect(compiled.querySelector('app-about-me-section')).toBeTruthy();
+    expect(compiled.querySelector('app-technologies-section')).toBeTruthy();
     expect(compiled.querySelector('app-projects-section')).toBeTruthy();
     expect(compiled.querySelector('app-contact-me-section')).toBeTruthy();
   });

@@ -12,6 +12,7 @@ import {
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ThemeService } from '../../core/theme.service';
 import { ResponsiveService } from '../../core/responsive.service';
+import { prefersReducedMotion } from '../../core/motion.config';
 
 interface Node {
   x: number;
@@ -90,7 +91,7 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
       return;
     }
 
-    this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.reducedMotion = prefersReducedMotion();
     if (this.reducedMotion) {
       this.drawStatic();
       return;

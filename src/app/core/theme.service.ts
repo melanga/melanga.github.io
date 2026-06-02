@@ -42,8 +42,15 @@ export class ThemeService {
     } catch {
       // ignore
     }
-    if (this.doc?.defaultView?.matchMedia('(prefers-color-scheme: light)')?.matches) {
-      return 'light';
+    const matchMedia = this.doc?.defaultView?.matchMedia;
+    if (typeof matchMedia === 'function') {
+      try {
+        if (matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+      } catch {
+        // ignore unsupported media queries in test environments
+      }
     }
     return 'dark';
   }
