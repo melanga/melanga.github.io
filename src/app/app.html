@@ -1,9 +1,14 @@
-<div class="w-full h-full font-['Encode_Sans_Expanded']">
+<div class="app-shell w-full h-full">
+  <app-neural-network-background />
   @if (showCustomCursor()) {
     <app-custom-cursor />
   }
+  <header class="site-header">
+    <app-navbar />
+  </header>
   <app-top-section />
-  <app-about-me-section />
+  <app-technologies-section />
   <app-projects-section />
   <app-contact-me-section />
+  <app-project-detail-overlay />
 </div>

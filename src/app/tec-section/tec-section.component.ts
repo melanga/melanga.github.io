@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { ScrollAnimateDirective } from '../core/scroll-animate.directive';
+import { SpringAnimateDirective } from '../core/spring-animate.directive';
 import {
   simpleTensorflow,
   simpleScikitlearn,
@@ -32,7 +32,7 @@ const TECH_DETAILS: readonly TechItem[] = [
 
 @Component({
   selector: 'app-tec-section',
-  imports: [NgIcon, ScrollAnimateDirective],
+  imports: [NgIcon, SpringAnimateDirective],
   viewProviders: [
     provideIcons({
       simpleTensorflow,
@@ -47,12 +47,18 @@ const TECH_DETAILS: readonly TechItem[] = [
     }),
   ],
   templateUrl: './tec-section.component.html',
+  styles: `
+    .tech-icon-wrap {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px) saturate(150%);
+      -webkit-backdrop-filter: blur(8px) saturate(150%);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 6px;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TecSectionComponent {
   protected readonly techDetails = TECH_DETAILS;
-
-  protected staggerDelay(index: number): string {
-    return `${index * 80}ms`;
-  }
 }

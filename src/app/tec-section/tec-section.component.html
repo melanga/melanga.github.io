@@ -1,13 +1,13 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 ml-6 gap-y-6">
   @for (item of techDetails; track item.name; let i = $index) {
     <div
-      appScrollAnimate animation="fade-up-slight" [animationDelay]="staggerDelay(i)"
-      class="flex flex-row justify-start items-center gap-3 hover:scale-110 transition-transform duration-200 origin-left cursor-default"
+      appSpringAnimate springAnimation="fade-up-slight" [springDelay]="i * 80"
+      class="flex flex-row justify-start items-center gap-3 hover:scale-110 transition-transform duration-200 origin-left cursor-default tech-chip"
     >
-      <div class="text-cyan-200 text-lg md:text-xl flex items-center justify-center">
+      <div class="text-lg md:text-xl flex items-center justify-center section-accent-icon tech-icon-wrap">
         <ng-icon [name]="item.icon" size="24" />
       </div>
-      <p class="text-sm md:text-lg text-white border-b-2 border-b-cyan-500">{{ item.name }}</p>
+      <p class="text-sm md:text-lg section-text border-b-2 section-accent-border-bottom">{{ item.name }}</p>
     </div>
   }
 </div>

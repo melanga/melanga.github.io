@@ -1,49 +1,64 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  inject,
   viewChild,
-  AfterViewInit,
   OnDestroy,
   ElementRef,
+  afterNextRender,
+  PLATFORM_ID,
+  inject,
 } from '@angular/core';
+import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import Typed from 'typed.js';
-import { ResponsiveService } from '../core/responsive.service';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { ScrollToDirective } from '../core/scroll-to.directive';
-import { ScrollAnimateDirective } from '../core/scroll-animate.directive';
+import { SpringAnimateDirective } from '../core/spring-animate.directive';
 
 @Component({
   selector: 'app-top-section',
-  imports: [NavbarComponent, ScrollToDirective, ScrollAnimateDirective],
+  imports: [ScrollToDirective, SpringAnimateDirective, NgOptimizedImage],
   templateUrl: './top-section.component.html',
   styleUrl: './top-section.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopSectionComponent implements AfterViewInit, OnDestroy {
-  private readonly responsive = inject(ResponsiveService);
+export class TopSectionComponent implements OnDestroy {
+  private readonly platformId = inject(PLATFORM_ID);
   private typedInstance: Typed | null = null;
 
   readonly typedTarget = viewChild<ElementRef<HTMLSpanElement>>('typedTarget');
-  protected readonly isTablet = this.responsive.isTablet;
 
-  ngAfterViewInit(): void {
-    this.initTypedAnimation();
+  constructor() {
+    afterNextRender(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        this.initTypedAnimation();
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.typedInstance?.destroy();
+    this.typedInstance = null;
   }
 
   private initTypedAnimation(): void {
-    const el = this.typedTarget()?.nativeElement;
-    if (el) {
-      this.typedInstance = new Typed(el, {
-        strings: ['Developer', 'Enthusiast', 'Programmer'],
-        typeSpeed: 50,
-        backSpeed: 50,
-        loop: true,
-      });
+    if (this.typedInstance) {
+      return;
     }
+
+    const el = this.typedTarget()?.nativeElement;
+    if (!el) {
+      return;
+    }
+
+    this.typedInstance = new Typed(el, {
+      strings: ['Developer', 'Enthusiast', 'Programmer'],
+      typeSpeed: 50,
+      backSpeed: 40,
+      backDelay: 1200,
+      loop: true,
+      smartBackspace: false,
+      contentType: 'text',
+      showCursor: true,
+      cursorChar: '|',
+    });
   }
 }

@@ -1,29 +1,32 @@
 <section
   id="Contact-Me"
-  class="border-t-2 border-cyan-500 w-full flex min-h-screen bg-gradient-to-r from-blue-900 to-cyan-500 justify-center items-center"
+  class="contact-section section-bg section-border"
 >
-  <div
-    appScrollAnimate animation="scale-in"
-    class="mx-4 flex flex-col h-[70%] w-max p-4 sm:p-10 justify-center max-w-3xl gap-6 bg-purple-800/10 rounded-[10px]"
-  >
+  <app-liquid-glass-panel extraClass="contact-panel">
     <h1
-      appScrollAnimate animation="fade-up-slight" animationDelay="200ms"
-      class="text-2xl sm:text-4xl font-black text-center text-yellow-50"
+      appSpringAnimate
+      springAnimation="fade-up-slight"
+      [springDelay]="200"
+      class="contact-heading font-display font-semibold text-center section-text"
     >
       Get in Touch
     </h1>
     <p
-      appScrollAnimate animation="fade-up-slight" animationDelay="400ms"
-      class="text-base md:text-lg font-medium tracking-wider text-center text-white"
+      appSpringAnimate
+      springAnimation="fade-up-slight"
+      [springDelay]="400"
+      class="contact-body font-normal text-center section-text"
     >
       Although I'm not currently looking for any new opportunities, my inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
     </p>
     <a
-      appScrollAnimate animation="fade-up" animationDelay="600ms"
+      appSpringAnimate
+      springAnimation="fade-up"
+      [springDelay]="600"
       href="mailto:dissanayakedmmb@gmail.com"
-      class="border-2 rounded-[10px] border-blue-500 w-fit pt-2 pb-2 pl-6 pr-6 self-center text-white hover:bg-cyan-500/10 transition-colors"
+      class="contact-cta section-cta self-center transition-colors"
     >
       Say Hi
     </a>
-  </div>
+  </app-liquid-glass-panel>
 </section>
