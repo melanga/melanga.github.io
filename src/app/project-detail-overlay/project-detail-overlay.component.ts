@@ -225,8 +225,11 @@ const LANG_COLORS: Record<string, string> = {
     .overlay-panel {
       opacity: 0;
       transform-origin: center center;
-      will-change: transform, top, left, width, height, opacity;
       box-shadow: var(--glass-shadow), 0 24px 80px rgba(13, 148, 136, 0.25);
+    }
+
+    .overlay-panel--animating {
+      will-change: transform, opacity;
     }
 
     .close-btn {
@@ -509,6 +512,7 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.panelAnimation?.stop();
     this.backdropAnimation?.stop();
+    this.detailService.setOverlayOpen(false);
     this.unlockScroll();
   }
 
@@ -548,7 +552,8 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   private openOverlay(originRect: DOMRect): void {
     this.previousFocus = document.activeElement as HTMLElement;
     this.contentVisible.set(false);
-    this.panelLayout.set(this.computeOriginLayout(originRect));
+    this.detailService.setOverlayOpen(true);
+    this.panelLayout.set(this.computeTargetLayout());
     this.visible.set(true);
     this.lockScroll();
 
@@ -558,23 +563,29 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
         const backdrop = this.backdropRef()?.nativeElement;
         if (!panel || !backdrop) return;
 
-        const target = this.computeTargetLayout();
+        const origin = this.computeOriginLayout(originRect);
+        const target = this.panelLayout() ?? this.computeTargetLayout();
+
+        panel.style.transform = this.morphTransform(origin, target);
+        panel.style.opacity = '0';
+        panel.style.borderRadius = `${origin.borderRadius}px`;
+        panel.classList.add('overlay-panel--animating');
 
         this.backdropAnimation = animate(backdrop, { opacity: 1 }, { duration: 0.3 });
 
         this.panelAnimation = animate(
           panel,
           {
-            top: target.top,
-            left: target.left,
-            width: target.width,
-            height: target.height,
+            transform: 'translate(0px, 0px) scale(1)',
             opacity: 1,
-            borderRadius: target.borderRadius,
+            borderRadius: `${target.borderRadius}px`,
           },
           {
             ...resolveTransition(POPUP_SPRING),
-            onComplete: () => this.contentVisible.set(true),
+            onComplete: () => {
+              panel.classList.remove('overlay-panel--animating');
+              this.contentVisible.set(true);
+            },
           },
         );
 
@@ -593,18 +604,17 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
     }
 
     const origin = this.computeOriginLayout(this.storedOrigin);
+    const target = this.panelLayout() ?? this.computeTargetLayout();
     this.contentVisible.set(false);
+    panel.classList.add('overlay-panel--animating');
 
     this.backdropAnimation = animate(backdrop, { opacity: 0 }, { duration: 0.25 });
     this.panelAnimation = animate(
       panel,
       {
-        top: origin.top,
-        left: origin.left,
-        width: origin.width,
-        height: origin.height,
+        transform: this.morphTransform(origin, target),
         opacity: 0,
-        borderRadius: origin.borderRadius,
+        borderRadius: `${origin.borderRadius}px`,
       },
       {
         ...resolveTransition(POPUP_SPRING),
@@ -614,6 +624,13 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   }
 
   private finishClose(): void {
+    const panel = this.panelRef()?.nativeElement;
+    if (panel) {
+      panel.classList.remove('overlay-panel--animating');
+      panel.style.transform = '';
+      panel.style.opacity = '';
+    }
+    this.detailService.setOverlayOpen(false);
     this.visible.set(false);
     this.contentVisible.set(false);
     this.panelLayout.set(null);
@@ -621,6 +638,18 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
     this.unlockScroll();
     this.previousFocus?.focus();
     this.previousFocus = null;
+  }
+
+  private morphTransform(origin: PanelLayout, target: PanelLayout): string {
+    const originCenterX = origin.left + origin.width / 2;
+    const originCenterY = origin.top + origin.height / 2;
+    const targetCenterX = target.left + target.width / 2;
+    const targetCenterY = target.top + target.height / 2;
+    const scaleX = origin.width / target.width;
+    const scaleY = origin.height / target.height;
+    const translateX = originCenterX - targetCenterX;
+    const translateY = originCenterY - targetCenterY;
+    return `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`;
   }
 
   private computeOriginLayout(rect: DOMRect): PanelLayout {
@@ -634,16 +663,6 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
     const width = isMobile ? vw * 0.92 : Math.min(720, vw * 0.85);
     const height = isMobile ? vh * 0.88 : Math.min(600, vh * 0.82);
     return { top: (vh - height) / 2, left: (vw - width) / 2, width, height, borderRadius: 24 };
-  }
-
-  private applyLayout(el: HTMLElement, layout: PanelLayout): void {
-    Object.assign(el.style, {
-      top: `${layout.top}px`,
-      left: `${layout.left}px`,
-      width: `${layout.width}px`,
-      height: `${layout.height}px`,
-      borderRadius: `${layout.borderRadius}px`,
-    });
   }
 
   private lockScroll(): void {

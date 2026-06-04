@@ -34,8 +34,11 @@ export class ScrollAnimateDirective implements AfterViewInit, OnDestroy {
     nativeEl.classList.add('scroll-animate', `animate-${this.animation()}`);
     nativeEl.style.setProperty('--animate-delay', this.animationDelay());
 
+    nativeEl.style.willChange = 'opacity, transform';
+
     if (typeof IntersectionObserver === 'undefined') {
       nativeEl.classList.add('animate-visible');
+      this.clearWillChangeAfterTransition(nativeEl);
       return;
     }
 
@@ -43,12 +46,24 @@ export class ScrollAnimateDirective implements AfterViewInit, OnDestroy {
       ([entry]) => {
         if (entry.isIntersecting) {
           nativeEl.classList.add('animate-visible');
+          this.clearWillChangeAfterTransition(nativeEl);
           this.observer?.unobserve(nativeEl);
         }
       },
       { threshold: this.threshold() },
     );
     this.observer.observe(nativeEl);
+  }
+
+  private clearWillChangeAfterTransition(el: HTMLElement): void {
+    const onTransitionEnd = (event: TransitionEvent): void => {
+      if (event.target !== el || (event.propertyName !== 'opacity' && event.propertyName !== 'transform')) {
+        return;
+      }
+      el.style.willChange = '';
+      el.removeEventListener('transitionend', onTransitionEnd);
+    };
+    el.addEventListener('transitionend', onTransitionEnd);
   }
 
   ngOnDestroy(): void {

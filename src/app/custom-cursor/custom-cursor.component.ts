@@ -18,6 +18,43 @@ interface CursorPosition {
 
 const EASING_FACTOR = 0.4;
 const SNAP_THRESHOLD = 0.1;
+const CLICKABLE_SELECTOR = 'a, button, [role="button"]';
+const INERT_TAGS = new Set([
+  'html',
+  'body',
+  'div',
+  'p',
+  'span',
+  'section',
+  'article',
+  'main',
+  'header',
+  'footer',
+  'nav',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'canvas',
+  'svg',
+  'path',
+  'g',
+  'line',
+  'circle',
+  'rect',
+  'img',
+  'ul',
+  'ol',
+  'li',
+  'td',
+  'th',
+  'tr',
+  'table',
+  'thead',
+  'tbody',
+]);
 
 @Component({
   selector: 'app-custom-cursor',
@@ -28,7 +65,7 @@ const SNAP_THRESHOLD = 0.1;
 export class CustomCursorComponent implements AfterViewInit, OnDestroy {
   private readonly cursorRef = viewChild<ElementRef<HTMLDivElement>>('cursor');
   private animationFrameId: number | null = null;
-  private hovering = false;
+  private pointerActive = false;
   private readonly position: CursorPosition = {
     mouseX: 0,
     mouseY: 0,
@@ -51,47 +88,63 @@ export class CustomCursorComponent implements AfterViewInit, OnDestroy {
   }
 
   private addEventListeners(): void {
-    document.addEventListener('mousemove', this.trackMousePosition);
-    document.addEventListener('mouseover', this.activateHoverState);
-    document.addEventListener('mouseout', this.deactivateHoverState);
+    const opts: AddEventListenerOptions = { passive: true };
+    document.addEventListener('pointermove', this.trackPointerPosition, opts);
+    document.addEventListener('pointerover', this.onPointerOver, opts);
+    document.addEventListener('pointerout', this.onPointerOut, opts);
   }
 
   private removeEventListeners(): void {
-    document.removeEventListener('mousemove', this.trackMousePosition);
-    document.removeEventListener('mouseover', this.activateHoverState);
-    document.removeEventListener('mouseout', this.deactivateHoverState);
+    document.removeEventListener('pointermove', this.trackPointerPosition);
+    document.removeEventListener('pointerover', this.onPointerOver);
+    document.removeEventListener('pointerout', this.onPointerOut);
   }
 
-  private trackMousePosition = (event: MouseEvent): void => {
+  private trackPointerPosition = (event: PointerEvent): void => {
     const cursor = this.cursorRef()?.nativeElement;
     if (!cursor) return;
+    this.pointerActive = true;
     this.position.mouseX = event.clientX - cursor.offsetWidth / 2;
     this.position.mouseY = event.clientY - cursor.offsetHeight / 2;
   };
 
-  private activateHoverState = (event: MouseEvent): void => {
-    const target = event.target as HTMLElement;
+  private onPointerOver = (event: PointerEvent): void => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
     if (this.isClickable(target)) {
       this.applyHoverState(true);
     }
   };
 
-  private deactivateHoverState = (event: MouseEvent): void => {
-    const target = event.target as HTMLElement;
-    if (this.isClickable(target)) {
-      this.applyHoverState(false);
+  private onPointerOut = (event: PointerEvent): void => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement) || !this.isClickable(target)) return;
+
+    const related = event.relatedTarget;
+    if (related instanceof HTMLElement && related.closest(CLICKABLE_SELECTOR)) {
+      return;
     }
+    this.applyHoverState(false);
   };
 
   private isClickable(el: HTMLElement): boolean {
     const tag = el.tagName.toLowerCase();
     if (tag === 'a' || tag === 'button') return true;
     if (el.getAttribute('role') === 'button') return true;
-    return el.closest('a, button, [role="button"]') !== null;
+
+    if (!INERT_TAGS.has(tag)) {
+      return el.closest(CLICKABLE_SELECTOR) !== null;
+    }
+
+    const parent = el.parentElement;
+    if (!parent) return false;
+    const parentTag = parent.tagName.toLowerCase();
+    if (parentTag === 'a' || parentTag === 'button') return true;
+    if (parent.getAttribute('role') === 'button') return true;
+    return parent.closest(CLICKABLE_SELECTOR) !== null;
   }
 
   private applyHoverState(hover: boolean): void {
-    this.hovering = hover;
     const cursor = this.cursorRef()?.nativeElement;
     if (!cursor) return;
     cursor.classList.toggle('cursor-hover', hover);
@@ -102,24 +155,26 @@ export class CustomCursorComponent implements AfterViewInit, OnDestroy {
     const cursor = this.cursorRef()?.nativeElement;
     if (!cursor) return;
 
-    const { mouseX, mouseY, destinationX, destinationY, distanceX, distanceY } = this.position;
+    if (this.pointerActive) {
+      const { mouseX, mouseY, destinationX, destinationY, distanceX, distanceY } = this.position;
 
-    if (!destinationX && !destinationY) {
-      this.position.destinationX = mouseX;
-      this.position.destinationY = mouseY;
-    } else {
-      this.position.distanceX = (mouseX - destinationX) * EASING_FACTOR;
-      this.position.distanceY = (mouseY - destinationY) * EASING_FACTOR;
-
-      if (Math.abs(this.position.distanceX) + Math.abs(this.position.distanceY) < SNAP_THRESHOLD) {
+      if (!destinationX && !destinationY) {
         this.position.destinationX = mouseX;
         this.position.destinationY = mouseY;
       } else {
-        this.position.destinationX += distanceX;
-        this.position.destinationY += distanceY;
-      }
-    }
+        this.position.distanceX = (mouseX - destinationX) * EASING_FACTOR;
+        this.position.distanceY = (mouseY - destinationY) * EASING_FACTOR;
 
-    cursor.style.transform = `translate3d(${this.position.destinationX}px, ${this.position.destinationY}px, 0)`;
+        if (Math.abs(this.position.distanceX) + Math.abs(this.position.distanceY) < SNAP_THRESHOLD) {
+          this.position.destinationX = mouseX;
+          this.position.destinationY = mouseY;
+        } else {
+          this.position.destinationX += distanceX;
+          this.position.destinationY += distanceY;
+        }
+      }
+
+      cursor.style.transform = `translate3d(${this.position.destinationX}px, ${this.position.destinationY}px, 0)`;
+    }
   };
 }

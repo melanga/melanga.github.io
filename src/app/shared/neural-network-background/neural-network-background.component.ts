@@ -12,6 +12,7 @@ import {
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ThemeService } from '../../core/theme.service';
 import { ResponsiveService } from '../../core/responsive.service';
+import { ProjectDetailService } from '../../core/project-detail.service';
 import { prefersReducedMotion } from '../../core/motion.config';
 
 interface Node {
@@ -22,8 +23,15 @@ interface Node {
   radius: number;
 }
 
+interface ThemeColors {
+  node: string;
+  line: string;
+}
+
 const CONNECTION_DISTANCE = 150;
+const CONNECTION_DISTANCE_SQ = CONNECTION_DISTANCE * CONNECTION_DISTANCE;
 const MOUSE_RADIUS = 180;
+const MOUSE_RADIUS_SQ = MOUSE_RADIUS * MOUSE_RADIUS;
 const MOUSE_FORCE = 0.015;
 
 @Component({
@@ -50,6 +58,7 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
   private readonly platformId = inject(PLATFORM_ID);
   private readonly themeService = inject(ThemeService);
   private readonly responsive = inject(ResponsiveService);
+  private readonly projectDetail = inject(ProjectDetailService);
   private readonly doc = inject(DOCUMENT);
 
   private ctx: CanvasRenderingContext2D | null = null;
@@ -62,6 +71,10 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
   private dpr = 1;
   private reducedMotion = false;
   private visible = true;
+  private themeColors: ThemeColors = {
+    node: 'rgba(45, 212, 191, 0.6)',
+    line: 'rgba(45, 212, 191, 0.15)',
+  };
 
   private readonly onMouseMove = (e: MouseEvent): void => {
     this.mouseX = e.clientX;
@@ -83,6 +96,7 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
   constructor() {
     effect(() => {
       this.themeService.theme();
+      this.refreshThemeColors();
     });
   }
 
@@ -91,6 +105,7 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
       return;
     }
 
+    this.refreshThemeColors();
     this.reducedMotion = prefersReducedMotion();
     if (this.reducedMotion) {
       this.drawStatic();
@@ -115,6 +130,17 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
     }
+  }
+
+  private refreshThemeColors(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    const styles = getComputedStyle(this.doc.documentElement);
+    this.themeColors = {
+      node: styles.getPropertyValue('--neural-node').trim() || 'rgba(45, 212, 191, 0.6)',
+      line: styles.getPropertyValue('--neural-line').trim() || 'rgba(45, 212, 191, 0.15)',
+    };
   }
 
   private setupCanvas(): void {
@@ -144,38 +170,29 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
     }));
   }
 
-  private getThemeColors(): { node: string; line: string } {
-    const styles = getComputedStyle(this.doc.documentElement);
-    return {
-      node: styles.getPropertyValue('--neural-node').trim() || 'rgba(45, 212, 191, 0.6)',
-      line: styles.getPropertyValue('--neural-line').trim() || 'rgba(45, 212, 191, 0.15)',
-    };
-  }
-
-  private drawStatic(): void {
-    this.setupCanvas();
-    this.initNodes();
-    const ctx = this.ctx;
-    if (!ctx) return;
-    const { node, line } = this.getThemeColors();
-    ctx.clearRect(0, 0, this.width, this.height);
-
+  private drawConnections(ctx: CanvasRenderingContext2D, line: string): void {
     for (let i = 0; i < this.nodes.length; i++) {
       for (let j = i + 1; j < this.nodes.length; j++) {
         const a = this.nodes[i];
         const b = this.nodes[j];
-        const dist = Math.hypot(a.x - b.x, a.y - b.y);
-        if (dist < CONNECTION_DISTANCE) {
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < CONNECTION_DISTANCE_SQ) {
+          const dist = Math.sqrt(distSq);
           ctx.beginPath();
           ctx.strokeStyle = line;
           ctx.globalAlpha = 1 - dist / CONNECTION_DISTANCE;
+          ctx.lineWidth = 1;
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
           ctx.stroke();
         }
       }
     }
+  }
 
+  private drawNodes(ctx: CanvasRenderingContext2D, node: string): void {
     ctx.globalAlpha = 1;
     for (const n of this.nodes) {
       ctx.beginPath();
@@ -185,23 +202,36 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
     }
   }
 
+  private drawStatic(): void {
+    this.setupCanvas();
+    this.initNodes();
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const { node, line } = this.themeColors;
+    ctx.clearRect(0, 0, this.width, this.height);
+    this.drawConnections(ctx, line);
+    this.drawNodes(ctx, node);
+  }
+
   private tick = (): void => {
-    if (!this.visible) {
-      this.animationId = requestAnimationFrame(this.tick);
+    this.animationId = requestAnimationFrame(this.tick);
+
+    if (!this.visible || this.projectDetail.overlayOpen()) {
       return;
     }
 
     const ctx = this.ctx;
     if (!ctx) return;
 
-    const { node, line } = this.getThemeColors();
+    const { node, line } = this.themeColors;
     ctx.clearRect(0, 0, this.width, this.height);
 
     for (const n of this.nodes) {
       const dx = this.mouseX - n.x;
       const dy = this.mouseY - n.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < MOUSE_RADIUS && dist > 0) {
+      const distSq = dx * dx + dy * dy;
+      if (distSq < MOUSE_RADIUS_SQ && distSq > 0) {
+        const dist = Math.sqrt(distSq);
         const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
         n.vx -= (dx / dist) * force * MOUSE_FORCE;
         n.vy -= (dy / dist) * force * MOUSE_FORCE;
@@ -220,31 +250,7 @@ export class NeuralNetworkBackgroundComponent implements AfterViewInit, OnDestro
       n.vy *= 0.995;
     }
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      for (let j = i + 1; j < this.nodes.length; j++) {
-        const a = this.nodes[i];
-        const b = this.nodes[j];
-        const dist = Math.hypot(a.x - b.x, a.y - b.y);
-        if (dist < CONNECTION_DISTANCE) {
-          ctx.beginPath();
-          ctx.strokeStyle = line;
-          ctx.globalAlpha = 1 - dist / CONNECTION_DISTANCE;
-          ctx.lineWidth = 1;
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    ctx.globalAlpha = 1;
-    for (const n of this.nodes) {
-      ctx.beginPath();
-      ctx.fillStyle = node;
-      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    this.animationId = requestAnimationFrame(this.tick);
+    this.drawConnections(ctx, line);
+    this.drawNodes(ctx, node);
   };
 }
