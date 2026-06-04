@@ -17,16 +17,15 @@
   outline: 2px solid var(--accent);
 }
 
-/* Decorative orb */
+/* Decorative orb — radial gradient only (no filter: blur; Safari breaks corner clipping) */
 .card-orb {
   position: absolute;
-  top: -2.5rem;
-  right: -2.5rem;
-  width: 7rem;
-  height: 7rem;
+  top: -3rem;
+  right: -3rem;
+  width: 9rem;
+  height: 9rem;
   border-radius: 50%;
-  opacity: 0.35;
-  filter: blur(28px);
+  opacity: 0.45;
   pointer-events: none;
   z-index: 0;
 }

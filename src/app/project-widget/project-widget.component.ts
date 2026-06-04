@@ -28,12 +28,18 @@ const LANG_COLORS: Record<string, string> = {
 };
 
 const ORB_GRADIENTS: Record<string, string> = {
-  JavaScript: 'radial-gradient(circle, #f7df1e, #f0a500)',
-  TypeScript: 'radial-gradient(circle, #3178c6, #1a5fa8)',
-  Python: 'radial-gradient(circle, #3572A5, #1a3d5e)',
-  Dart: 'radial-gradient(circle, #00B4AB, #006b66)',
-  Java: 'radial-gradient(circle, #b07219, #7a4e10)',
-  default: 'radial-gradient(circle, var(--accent-deep), var(--accent-muted))',
+  JavaScript:
+    'radial-gradient(circle at center, rgba(247, 223, 30, 0.55) 0%, rgba(247, 223, 30, 0.2) 40%, transparent 72%)',
+  TypeScript:
+    'radial-gradient(circle at center, rgba(49, 120, 198, 0.55) 0%, rgba(49, 120, 198, 0.2) 40%, transparent 72%)',
+  Python:
+    'radial-gradient(circle at center, rgba(53, 114, 165, 0.55) 0%, rgba(53, 114, 165, 0.2) 40%, transparent 72%)',
+  Dart:
+    'radial-gradient(circle at center, rgba(0, 180, 171, 0.55) 0%, rgba(0, 180, 171, 0.2) 40%, transparent 72%)',
+  Java:
+    'radial-gradient(circle at center, rgba(176, 114, 25, 0.55) 0%, rgba(176, 114, 25, 0.2) 40%, transparent 72%)',
+  default:
+    'radial-gradient(circle at center, color-mix(in srgb, var(--accent-deep) 55%, transparent) 0%, color-mix(in srgb, var(--accent-muted) 25%, transparent) 40%, transparent 72%)',
 };
 
 @Component({
