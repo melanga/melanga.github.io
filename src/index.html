@@ -2,26 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Melanga Dissanayake</title>
-  <meta name="description" content="personal portfolio of Melanga Dissanayake">
+  <title>Melanga Dissanayake — Software Engineer</title>
+  <meta name="description" content="Melanga Dissanayake is a software engineer working at the intersection of machine learning, neural networks and well-crafted mobile & web software.">
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#08090b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#efede6" media="(prefers-color-scheme: light)">
+  <meta name="author" content="Melanga Dissanayake">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://melanga.github.io/">
+  <meta property="og:title" content="Melanga Dissanayake — Software Engineer">
+  <meta property="og:description" content="Turning noise into signal — machine learning, neural networks and the software around them.">
+  <meta property="og:image" content="https://melanga.github.io/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Melanga Dissanayake — a particle portrait beside his name">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preload" as="image" href="assets/images/portrait-density.png">
   <script>
-    (function() {
+    (function () {
       try {
         var t = localStorage.getItem('portfolio-theme');
-        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
-        else document.documentElement.setAttribute('data-theme', 'dark');
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      document.documentElement.classList.add('js');
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('reduced-motion');
+        }
       } catch (e) {}
     })();
   </script>
 </head>
 <body>
   <app-root></app-root>
+  <noscript>
+    <div style="padding:4rem 1.5rem;font-family:system-ui,sans-serif;max-width:40rem;margin:auto">
+      <h1>Melanga Dissanayake</h1>
+      <p>Software engineer — machine learning, neural networks, mobile &amp; web.</p>
+      <p><a href="mailto:dissanayakedmmb@gmail.com">dissanayakedmmb@gmail.com</a> · <a href="https://github.com/melanga">GitHub</a></p>
+    </div>
+  </noscript>
 </body>
 </html>

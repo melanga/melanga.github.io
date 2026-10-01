@@ -1,31 +1,30 @@
-import {
-  Component,
-  inject,
-  ChangeDetectionStrategy,
-  effect,
-  PLATFORM_ID,
-} from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { ResponsiveService } from './core/responsive.service';
-import { CustomCursorComponent } from './custom-cursor/custom-cursor.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { TopSectionComponent } from './top-section/top-section.component';
-import { TechnologiesSectionComponent } from './technologies-section/technologies-section.component';
-import { ProjectsSectionComponent } from './projects-section/projects-section.component';
-import { ContactMeSectionComponent } from './contact-me-section/contact-me-section.component';
-import { NeuralNetworkBackgroundComponent } from './shared/neural-network-background/neural-network-background.component';
+import { ChangeDetectionStrategy, Component, afterNextRender, inject, signal } from '@angular/core';
+import { SignalFieldComponent } from './shell/signal-field/signal-field.component';
+import { PreloaderComponent } from './shell/preloader/preloader.component';
+import { CursorComponent } from './shell/cursor/cursor.component';
+import { NavbarComponent } from './shell/navbar/navbar.component';
+import { HeroComponent } from './sections/hero/hero.component';
+import { AboutComponent } from './sections/about/about.component';
+import { StackComponent } from './sections/stack/stack.component';
+import { WorkComponent } from './sections/work/work.component';
+import { ContactComponent } from './sections/contact/contact.component';
 import { ProjectDetailOverlayComponent } from './project-detail-overlay/project-detail-overlay.component';
+import { SmoothScrollService } from './core/smooth-scroll.service';
+import { IntroService } from './core/intro.service';
+import { hasFinePointer, prefersReducedMotion } from './core/motion.config';
 
 @Component({
   selector: 'app-root',
   imports: [
-    CustomCursorComponent,
+    SignalFieldComponent,
+    PreloaderComponent,
+    CursorComponent,
     NavbarComponent,
-    TopSectionComponent,
-    TechnologiesSectionComponent,
-    ProjectsSectionComponent,
-    ContactMeSectionComponent,
-    NeuralNetworkBackgroundComponent,
+    HeroComponent,
+    AboutComponent,
+    StackComponent,
+    WorkComponent,
+    ContactComponent,
     ProjectDetailOverlayComponent,
   ],
   templateUrl: './app.html',
@@ -33,15 +32,20 @@ import { ProjectDetailOverlayComponent } from './project-detail-overlay/project-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  private readonly responsive = inject(ResponsiveService);
-  private readonly platformId = inject(PLATFORM_ID);
-  protected readonly showCustomCursor = this.responsive.showCustomCursor;
+  private readonly scroll = inject(SmoothScrollService);
+  protected readonly intro = inject(IntroService);
+  protected readonly showCursor = signal(false);
 
   constructor() {
-    effect(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        document.body.classList.toggle('cursor-none', this.showCustomCursor());
-      }
+    afterNextRender(() => {
+      this.scroll.init();
+      this.showCursor.set(hasFinePointer() && !prefersReducedMotion());
     });
+  }
+
+  protected skipToContent(event: Event): void {
+    event.preventDefault();
+    this.scroll.scrollTo('about', { immediate: true });
+    document.getElementById('about')?.focus({ preventScroll: true });
   }
 }

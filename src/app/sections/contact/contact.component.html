@@ -1,0 +1,60 @@
+<section
+  id="contact"
+  class="section contact"
+  appTrackSection="contact"
+  data-field-state="5"
+  aria-labelledby="contact-title"
+>
+  <div class="container">
+    <app-section-head index="04" layer="Inference" title="Contact" />
+
+    <div class="contact__main">
+      <h2 id="contact-title" class="contact__title" appReveal="words">
+        Say <span class="serif accent">hello.</span>
+      </h2>
+
+      <p class="lead contact__lead" appReveal="rise" [revealDelay]="150">
+        My inbox is always open. Whether it's a question, an idea worth building or just a hello —
+        I'll do my best to get back to you.
+      </p>
+
+      <div class="contact__actions" appReveal="rise" [revealDelay]="280">
+        <a class="contact__email" [href]="'mailto:' + site.email" [appMagnetic]="0.18" data-cursor="write">
+          <span class="contact__email-text">{{ site.email }}</span>
+          <svg class="contact__email-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 18L18 6M8 6h10v10" fill="none" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </a>
+        <button type="button" class="btn" (click)="copyEmail()" data-cursor="copy" aria-live="polite">
+          <span class="btn__roll">
+            <span>{{ copied() ? 'Copied ✓' : 'Copy email' }}</span>
+            <span aria-hidden="true">{{ copied() ? 'Copied ✓' : 'Copy email' }}</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <dl class="contact__meta" appReveal="rise" [revealDelay]="380">
+      <div>
+        <dt class="label">Location</dt>
+        <dd>{{ site.location }}</dd>
+      </div>
+      <div>
+        <dt class="label">Local time</dt>
+        <dd class="mono">{{ clock.time() }} <span class="contact__tz">{{ site.utcOffset }}</span></dd>
+      </div>
+      <div>
+        <dt class="label">Elsewhere</dt>
+        <dd>
+          <a class="link-u" [href]="site.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <footer class="footer container">
+    <span class="label">© {{ year }} {{ site.name }}</span>
+    <span class="label footer__built">Designed &amp; engineered with Angular, WebGL &amp; curiosity</span>
+    <a class="label link-u footer__top" href="#top" (click)="backToTop($event)" data-cursor="to top">Back to top ↑</a>
+  </footer>
+</section>

@@ -1,14 +1,23 @@
-<div class="app-shell w-full h-full">
-  <app-neural-network-background />
-  @if (showCustomCursor()) {
-    <app-custom-cursor />
-  }
-  <header class="site-header">
-    <app-navbar />
-  </header>
-  <app-top-section />
-  <app-technologies-section />
-  <app-projects-section />
-  <app-contact-me-section />
-  <app-project-detail-overlay />
-</div>
+<a class="skip-link" href="#about" (click)="skipToContent($event)">Skip to content</a>
+
+<app-signal-field />
+<div class="atmosphere atmosphere--vignette" aria-hidden="true"></div>
+<div class="atmosphere atmosphere--grid" aria-hidden="true"></div>
+
+<app-preloader />
+<app-navbar />
+
+<main class="page" [class.is-revealed]="intro.revealed()">
+  <app-hero />
+  <app-about />
+  <app-stack />
+  <app-work />
+  <app-contact />
+</main>
+
+<app-project-detail-overlay />
+<div class="atmosphere atmosphere--grain" aria-hidden="true"></div>
+
+@if (showCursor()) {
+  <app-cursor />
+}

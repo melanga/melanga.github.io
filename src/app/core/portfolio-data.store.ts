@@ -21,6 +21,13 @@ export class PortfolioDataStore {
 
   readonly loading = computed(() => this.state().status === 'loading');
 
+  /** Where the projects on screen came from: GitHub (live or cached) or the bundled snapshot. */
+  readonly source = computed((): 'loading' | 'github' | 'snapshot' => {
+    const s = this.state();
+    if (s.status === 'loading') return 'loading';
+    return s.status === 'success' && s.data.fetchedAt > 0 ? 'github' : 'snapshot';
+  });
+
   readonly error = computed(() => {
     const s = this.state();
     return s.status === 'error' ? s.error : null;

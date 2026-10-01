@@ -30,6 +30,11 @@
               }
             ],
             "styles": [
+              "@fontsource-variable/geist/wght.css",
+              "@fontsource-variable/geist-mono/wght.css",
+              "@fontsource/instrument-serif/latin-400.css",
+              "@fontsource/instrument-serif/latin-400-italic.css",
+              "lenis/dist/lenis.css",
               "src/styles.css"
             ]
           },
@@ -43,8 +48,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all",
