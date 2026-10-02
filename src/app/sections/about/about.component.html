@@ -1,0 +1,113 @@
+<section
+  id="about"
+  class="section about"
+  appTrackSection="about"
+  data-field-state="2"
+  tabindex="-1"
+  aria-labelledby="about-title"
+>
+  <div class="container">
+    <app-section-head index="01" layer="Input" title="About" />
+
+    <h2 id="about-title" class="h2 about__title" appReveal="words">
+      Turning <span class="serif">noise</span> into signal.
+    </h2>
+
+    <p class="about__statement" #statement>
+      I'm Melanga — a software engineer with a B.Sc. (Hons) in Industrial Information Technology.
+      I'm fascinated by how machines learn: neural networks that read language, recognise images and
+      find the patterns hiding in noisy data. Alongside that, I design and build mobile and web
+      products — from Flutter apps to full-stack platforms — and I care about the details that make
+      software feel effortless.
+    </p>
+
+    <div class="about__grid">
+      <figure class="about__figure" #figure [class.is-scanned]="scanned()" data-cursor="inspect">
+        <div class="about__frame">
+          <img
+            #photo
+            class="about__photo"
+            src="assets/images/profile-1400.webp"
+            srcset="assets/images/profile-800.webp 800w, assets/images/profile-1400.webp 1400w"
+            sizes="(min-width: 960px) 44vw, 100vw"
+            width="1400"
+            height="1260"
+            alt="Melanga Dissanayake on a misty mountain summit, looking out over a green valley"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="about__scan" aria-hidden="true"></div>
+          @for (d of detections; track d.label; let i = $index) {
+            <div
+              class="det"
+              [class.det--accent]="d.tone === 'accent'"
+              [class.det--muted]="d.tone === 'muted'"
+              [style.left.%]="d.x"
+              [style.top.%]="d.y"
+              [style.width.%]="d.w"
+              [style.height.%]="d.h"
+              [style.--i]="i"
+              aria-hidden="true"
+            >
+              <span class="det__label">{{ d.label }} <b>{{ d.score }}</b></span>
+            </div>
+          }
+        </div>
+        <figcaption class="about__caption">
+          <span class="label">fig. 01 — input sample</span>
+          <span class="label">4 objects detected · 1400×1260</span>
+        </figcaption>
+      </figure>
+
+      <div class="card" appReveal="rise">
+        <div class="card__head">
+          <span class="label card__title">Model card</span>
+          <span class="label">melanga-v1.0</span>
+        </div>
+        <dl class="card__rows">
+          <div class="card__row">
+            <dt class="label">Architecture</dt>
+            <dd>Software engineer</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Training data</dt>
+            <dd>{{ site.degree }}</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Specialisation</dt>
+            <dd>Machine learning · Neural networks <span class="card__muted">(NLP, CV)</span></dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Fine-tuned on</dt>
+            <dd>Mobile &amp; web development</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Public projects</dt>
+            <dd class="card__num">
+              {{ projectCount() }}
+              <span class="card__live label" [class.is-live]="live()"
+                ><span class="dot"></span>{{ live() ? 'via GitHub API' : 'offline snapshot' }}</span
+              >
+            </dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Technologies</dt>
+            <dd class="card__num">{{ techCount() }}</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Deployment</dt>
+            <dd>{{ site.location }} · {{ site.utcOffset }}</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Intended use</dt>
+            <dd>Turning hard problems into thoughtful, well-built software</dd>
+          </div>
+          <div class="card__row">
+            <dt class="label">Known limitations</dt>
+            <dd class="card__muted">Will happily talk about neural networks for hours</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

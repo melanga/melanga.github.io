@@ -1,5 +1,5 @@
-import { Directive, inject, input, PLATFORM_ID } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Directive, inject, input } from '@angular/core';
+import { SmoothScrollService } from './smooth-scroll.service';
 
 @Directive({
   selector: '[appScrollTo]',
@@ -8,18 +8,14 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
   },
 })
 export class ScrollToDirective {
-  private readonly document = inject(DOCUMENT);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly scroll = inject(SmoothScrollService);
   readonly anchorId = input.required<string>();
+  readonly scrollOffset = input(0);
 
   protected scrollToAnchor(event: Event): void {
     event.preventDefault();
-    if (!isPlatformBrowser(this.platformId)) return;
-
     const id = this.anchorId();
     if (!id) return;
-
-    const target = this.document.getElementById(id);
-    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.scroll.scrollTo(id, { offset: this.scrollOffset() });
   }
 }

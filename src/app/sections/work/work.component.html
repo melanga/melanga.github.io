@@ -1,0 +1,153 @@
+<section id="work" class="section work" appTrackSection="work" data-field-state="4" aria-labelledby="work-title">
+  <div class="container">
+    <app-section-head index="03" layer="Output" title="Work" />
+
+    <div class="work__intro">
+      <h2 id="work-title" class="h2" appReveal="words">Selected <span class="serif">work.</span></h2>
+      <p class="lead work__lead" appReveal="rise" [revealDelay]="120">
+        Products designed and built end-to-end — from a Flutter companion app for university
+        timetables to real-time web platforms.
+      </p>
+    </div>
+
+    <div class="features">
+      @for (f of featured(); track f.project.id; let i = $index) {
+        <article class="feature" [style.--i]="i">
+          <div class="feature__card" #card>
+            <div class="feature__info">
+              <div class="feature__meta">
+                <span class="label feature__index">Output {{ pad(i + 1) }} / {{ pad(featured().length) }}</span>
+                <span class="label">{{ f.project.updatedAt | date: 'yyyy' }}</span>
+              </div>
+              <h3 class="feature__title">{{ f.project.displayName }}</h3>
+              <p class="feature__desc">{{ f.project.description }}</p>
+              <ul class="feature__tags" aria-label="Technologies">
+                @for (t of f.project.technologies.slice(0, 6); track t) {
+                  <li class="chip">{{ t }}</li>
+                }
+              </ul>
+              <div class="feature__actions">
+                <button type="button" class="btn" (click)="open(f.project, $event)" data-cursor="open">
+                  <span class="btn__roll"><span>Case details</span><span aria-hidden="true">Case details</span></span>
+                  <svg class="btn__icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M4 12L12 4M5 4h7v7" fill="none" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </button>
+                <a
+                  class="label link-u feature__source"
+                  [href]="f.project.htmlUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Source on GitHub ↗</a
+                >
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="feature__media"
+              (click)="open(f.project, $event)"
+              data-cursor="open"
+              [attr.aria-label]="'Open details for ' + f.project.displayName"
+            >
+              <span class="feature__chrome" aria-hidden="true">
+                <i></i><i></i><i></i>
+                <span class="feature__file">{{ f.project.name }}</span>
+              </span>
+              <span class="feature__shot">
+                <img [src]="f.image" alt="" width="700" height="438" loading="lazy" decoding="async" />
+              </span>
+            </button>
+            <span class="feature__shade" #shade aria-hidden="true"></span>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="index" id="work-index">
+      <div class="index__head">
+        <h3 class="index__title">
+          Index <span class="serif">of everything</span>
+          <span class="index__count mono">{{ pad(filtered().length) }}</span>
+        </h3>
+        <div class="index__filter">
+          @if (filter.selectedTag(); as tag) {
+            <span class="label">Filtered by</span>
+            <button type="button" class="chip index__chip" (click)="filter.clear()" data-cursor="clear">
+              {{ tag }} <span aria-hidden="true">×</span><span class="sr-only">Clear filter</span>
+            </button>
+          } @else if (store.source() === 'github') {
+            <span class="label">All public repositories · via GitHub API</span>
+          } @else {
+            <span class="label">Selected projects · offline snapshot</span>
+          }
+        </div>
+      </div>
+
+      <div class="index__cols label" aria-hidden="true">
+        <span>No.</span><span>Project</span><span class="index__col-stack">Stack</span><span>Language</span
+        ><span class="index__col-year">Year</span>
+      </div>
+
+      <ol class="index__list" (pointerleave)="hidePreview()">
+        @if (store.loading()) {
+          @for (s of [1, 2, 3, 4]; track s) {
+            <li class="row row--skeleton" aria-hidden="true"><span></span></li>
+          }
+        } @else {
+          @for (p of visible(); track p.id; let i = $index) {
+            <li>
+              <button
+                type="button"
+                class="row"
+                [style.--i]="i % 8"
+                (click)="open(p, $event)"
+                (pointerenter)="showPreview(p)"
+                data-cursor="open"
+                [attr.aria-label]="'Open details for ' + p.displayName"
+              >
+                <span class="row__no mono">{{ pad(i + 1) }}</span>
+                <span class="row__name">{{ p.displayName }}</span>
+                <span class="row__stack">{{ p.technologies.slice(0, 3).join(' · ') || '—' }}</span>
+                <span class="row__lang mono"
+                  ><i [style.background]="color(p.primaryLanguage)"></i>{{ p.primaryLanguage ?? '—' }}</span
+                >
+                <span class="row__year mono">{{ p.updatedAt | date: 'yyyy' }}</span>
+                <span class="row__arrow" aria-hidden="true">↗</span>
+              </button>
+            </li>
+          } @empty {
+            <li class="index__empty">
+              <p>No repositories use <b>{{ filter.selectedTag() }}</b> yet.</p>
+              <button type="button" class="btn" (click)="filter.clear()">
+                <span class="btn__roll"><span>Clear filter</span><span aria-hidden="true">Clear filter</span></span>
+              </button>
+            </li>
+          }
+        }
+      </ol>
+
+      @if (remaining() > 0) {
+        <div class="index__more">
+          <button type="button" class="btn" (click)="loadMore()" data-cursor="more">
+            <span class="btn__roll"
+              ><span>Load more · {{ remaining() }}</span><span aria-hidden="true">Load more · {{ remaining() }}</span></span
+            >
+          </button>
+        </div>
+      }
+
+      @if (store.source() === 'snapshot') {
+        <p class="index__error label" role="status">
+          GitHub is unreachable right now — showing a snapshot of featured projects.
+        </p>
+      }
+    </div>
+  </div>
+
+  <div class="preview" #preview aria-hidden="true">
+    @if (previewSrc(); as src) {
+      <img [src]="src" alt="" />
+    }
+  </div>
+</section>

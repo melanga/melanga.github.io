@@ -40,7 +40,7 @@ interface GithubRepo {
 }
 
 const GITHUB_USER = 'melanga';
-const CACHE_KEY = 'portfolio.github.melanga.v2';
+const CACHE_KEY = 'portfolio.github.melanga.v3';
 const CACHE_TTL_MS = 12 * 60 * 60 * 1000;
 const LANGUAGE_CONCURRENCY = 4;
 

@@ -1,0 +1,57 @@
+<section id="top" class="hero" appTrackSection="top" aria-labelledby="hero-title">
+  <div class="hero__inner container" #inner>
+    <p class="hero__eyebrow label" appReveal="fade" revealTrigger="intro">
+      <span class="dot dot--live"></span>
+      <span appScramble scrambleOn="intro" [scrambleDelay]="150" [scrambleDuration]="1100"
+        >Software engineer — machine learning</span
+      >
+    </p>
+
+    <h1 id="hero-title" class="display hero__name">
+      <span class="hero__line" appReveal="words" revealTrigger="intro" [revealDelay]="60">Melanga</span>
+      <span class="hero__line hero__line--last" appReveal="words" revealTrigger="intro" [revealDelay]="180"
+        >Dissanayake<span class="accent">.</span></span
+      >
+    </h1>
+
+    <div class="hero__body">
+      <p class="hero__tagline lead" appReveal="rise" revealTrigger="intro" [revealDelay]="420">
+        A software engineer drawn to how machines <span class="serif hero__em">learn</span> — neural
+        networks for language and vision — and to building the mobile &amp; web products that put
+        them to work.
+      </p>
+      <div class="hero__ctas" appReveal="rise" revealTrigger="intro" [revealDelay]="560">
+        <a class="btn btn--solid" href="#work" appMagnetic (click)="go($event, 'work')" data-cursor="explore">
+          <span class="btn__roll"><span>View work</span><span aria-hidden="true">View work</span></span>
+          <svg class="btn__icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M4 4l8 8M12 5v7H5" fill="none" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </a>
+        <a class="btn" href="#contact" appMagnetic (click)="go($event, 'contact')" data-cursor="say hi">
+          <span class="btn__roll"><span>Get in touch</span><span aria-hidden="true">Get in touch</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__readout container" appReveal="fade" revealTrigger="intro" [revealDelay]="760">
+    <dl class="hero__stats">
+      <div>
+        <dt class="label">Currently</dt>
+        <dd class="mono" #role>{{ site.roles[0] }}</dd>
+      </div>
+      <div>
+        <dt class="label">Based in</dt>
+        <dd class="mono">{{ site.location }}</dd>
+      </div>
+      <div>
+        <dt class="label">Local time</dt>
+        <dd class="mono hero__time">{{ clock.time() }} <span class="hero__tz">{{ site.utcOffset }}</span></dd>
+      </div>
+      <div class="hero__scroll">
+        <dt class="label">Scroll to explore</dt>
+        <dd><span class="hero__scroll-line" aria-hidden="true"></span></dd>
+      </div>
+    </dl>
+  </div>
+</section>

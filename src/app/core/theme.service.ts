@@ -1,9 +1,18 @@
 import { Injectable, PLATFORM_ID, inject, signal, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { prefersReducedMotion } from './motion.config';
 
 export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'portfolio-theme';
+
+interface ViewTransitionLike {
+  readonly ready: Promise<void>;
+}
+
+type DocumentWithTransitions = Document & {
+  startViewTransition?: (update: () => void) => ViewTransitionLike;
+};
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -30,8 +39,26 @@ export class ThemeService {
     this.theme.set(theme);
   }
 
-  toggleTheme(): void {
-    this.theme.update((t) => (t === 'dark' ? 'light' : 'dark'));
+  /**
+   * Flips the theme. Where the View Transitions API exists, the new theme
+   * spreads out as a circle from the point that was clicked.
+   */
+  toggleTheme(origin?: { x: number; y: number }): void {
+    const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
+    const doc = this.doc as DocumentWithTransitions | null;
+
+    if (!doc?.startViewTransition || prefersReducedMotion() || !origin) {
+      this.theme.set(next);
+      return;
+    }
+
+    const root = doc.documentElement;
+    root.style.setProperty('--vt-x', `${origin.x}px`);
+    root.style.setProperty('--vt-y', `${origin.y}px`);
+    doc.startViewTransition(() => {
+      this.theme.set(next);
+      root.setAttribute('data-theme', next);
+    });
   }
 
   private readInitialTheme(): Theme {

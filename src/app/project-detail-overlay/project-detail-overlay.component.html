@@ -1,0 +1,117 @@
+@if (visible()) {
+  <div class="ov" role="dialog" aria-modal="true" [attr.aria-label]="project()?.displayName ?? 'Project details'">
+    <div #backdrop class="ov__backdrop" (click)="close()" aria-hidden="true"></div>
+
+    <div
+      #panel
+      class="ov__panel"
+      [style.top.px]="layout()?.top"
+      [style.left.px]="layout()?.left"
+      [style.width.px]="layout()?.width"
+      [style.height.px]="layout()?.height"
+    >
+      @if (project(); as p) {
+        <button type="button" class="ov__close" (click)="close()" aria-label="Close project details" data-cursor="close">
+          <span class="label">Close</span>
+          <span class="ov__x" aria-hidden="true"></span>
+        </button>
+
+        <div class="ov__grid" [class.is-visible]="contentVisible()">
+          <div class="ov__media" [class.ov__media--shot]="isScreenshot()">
+            @if (cover(); as src) {
+              <img [src]="src" alt="" />
+            }
+            <span class="label ov__media-tag">
+              {{ isScreenshot() ? 'fig. — screenshot' : 'fig. — generative fingerprint · seeded by repo name' }}
+            </span>
+          </div>
+
+          <div class="ov__body" data-lenis-prevent>
+            <div class="ov__eyebrow label">
+              <span class="ov__lang-dot" [style.background]="languages()[0]?.color ?? 'var(--accent)'"></span>
+              {{ p.primaryLanguage ?? 'Project' }} · updated {{ p.updatedAt | date: 'MMM yyyy' }}
+            </div>
+            <h2 class="ov__title">{{ p.displayName }}</h2>
+            <p class="ov__slug mono">github.com/melanga/{{ p.name }}</p>
+            <p class="ov__desc">{{ p.description }}</p>
+
+            @if (p.technologies.length) {
+              <section class="ov__section">
+                <h3 class="label">Technologies</h3>
+                <ul class="ov__chips">
+                  @for (t of p.technologies; track t) {
+                    <li class="chip">{{ t }}</li>
+                  }
+                </ul>
+              </section>
+            }
+
+            @if (languages().length) {
+              <section class="ov__section">
+                <h3 class="label">Language weights</h3>
+                <ul class="ov__bars">
+                  @for (l of languages(); track l.name; let i = $index) {
+                    <li class="ov__bar" [style.--i]="i">
+                      <span class="ov__bar-name">{{ l.name }}</span>
+                      <span class="ov__bar-track">
+                        <span
+                          class="ov__bar-fill"
+                          [style.background]="l.color"
+                          [style.transform]="'scaleX(' + (contentVisible() ? l.pct / 100 : 0) + ')'"
+                        ></span>
+                      </span>
+                      <span class="ov__bar-pct mono">{{ l.pct }}%</span>
+                    </li>
+                  }
+                </ul>
+              </section>
+            }
+
+            @if (p.topics.length) {
+              <section class="ov__section">
+                <h3 class="label">Topics</h3>
+                <ul class="ov__chips">
+                  @for (t of p.topics; track t) {
+                    <li class="chip ov__topic">#{{ t }}</li>
+                  }
+                </ul>
+              </section>
+            }
+
+            <dl class="ov__stats">
+              <div>
+                <dt class="label">Stars</dt>
+                <dd class="mono">{{ p.stars }}</dd>
+              </div>
+              <div>
+                <dt class="label">Forks</dt>
+                <dd class="mono">{{ p.forks }}</dd>
+              </div>
+              <div>
+                <dt class="label">Last update</dt>
+                <dd class="mono">{{ p.updatedAt | date: 'dd.MM.yyyy' }}</dd>
+              </div>
+            </dl>
+
+            <div class="ov__links">
+              <a class="btn btn--solid" [href]="p.htmlUrl" target="_blank" rel="noopener noreferrer">
+                <span class="btn__roll"><span>View source</span><span aria-hidden="true">View source</span></span>
+                <svg class="btn__icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4 12L12 4M5 4h7v7" fill="none" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </a>
+              @if (p.homepageUrl) {
+                <a class="btn" [href]="p.homepageUrl" target="_blank" rel="noopener noreferrer">
+                  <span class="btn__roll"><span>Live site</span><span aria-hidden="true">Live site</span></span>
+                  <svg class="btn__icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M4 12L12 4M5 4h7v7" fill="none" stroke="currentColor" stroke-width="1.5" />
+                  </svg>
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

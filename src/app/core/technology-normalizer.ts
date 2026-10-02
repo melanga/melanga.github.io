@@ -1,9 +1,25 @@
 import { TECH_ALIASES, NOISY_TOPICS } from './portfolio-overrides.data';
 import type { TechnologyTag } from './portfolio.models';
 
+const ACRONYMS = new Set([
+  'ai', 'ml', 'nlp', 'cv', 'cnn', 'rnn', 'lstm', 'gan', 'llm', 'api', 'ui', 'ux', 'iot', 'sql', 'aws', 'gcp', 'ci', 'cd',
+]);
+
+/** GitHub topics arrive as lowercase slugs (`computer-vision`) — make them read like names. */
+function prettifySlug(slug: string): string {
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((w) => (ACRONYMS.has(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(' ');
+}
+
 export function normalizeTechName(raw: string): string {
-  const lower = raw.toLowerCase().trim();
-  return TECH_ALIASES[lower] ?? raw.trim();
+  const trimmed = raw.trim();
+  const lower = trimmed.toLowerCase();
+  const alias = TECH_ALIASES[lower];
+  if (alias) return alias;
+  return trimmed === lower ? prettifySlug(trimmed) : trimmed;
 }
 
 export function extractReadmeTechnologies(markdown: string): string[] {

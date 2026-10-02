@@ -1,0 +1,83 @@
+<header
+  class="nav"
+  [class.is-hidden]="hidden()"
+  [class.is-scrolled]="scrolled()"
+  [class.is-ready]="intro.revealed()"
+  [class.is-open]="menuOpen()"
+>
+  <div class="nav__inner container">
+    <a class="nav__brand" href="#top" (click)="go($event, 'top')" data-cursor="home">
+      <svg class="nav__glyph" viewBox="0 0 28 16" aria-hidden="true">
+        <path d="M1 8c3 0 3.5-6 6.5-6S10.5 14 13.5 14 16.5 2 19.5 2 23 8 27 8" />
+      </svg>
+      <span class="nav__name">{{ site.name }}</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      @for (s of sections; track s.id) {
+        <a
+          class="nav__link"
+          [class.is-active]="scroll.activeSection() === s.id"
+          [attr.href]="'#' + s.id"
+          [attr.aria-current]="scroll.activeSection() === s.id ? 'true' : null"
+          (click)="go($event, s.id)"
+        >
+          <span class="nav__index">{{ s.index }}</span>
+          <span [appScramble]="s.label" scrambleOn="none" [scrambleHover]="true"></span>
+        </a>
+      }
+    </nav>
+
+    <div class="nav__tools">
+      <span class="nav__clock label" aria-label="Local time in {{ site.location }}">
+        <span class="dot dot--live"></span>
+        LK <span class="nav__time">{{ clock.time() }}</span>
+      </span>
+      <button
+        type="button"
+        class="nav__theme"
+        (click)="toggleTheme($event)"
+        [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+        data-cursor="theme"
+      >
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.25" />
+          <path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="nav__menu-btn"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-menu"
+        data-cursor="menu"
+      >
+        <span class="label">{{ menuOpen() ? 'Close' : 'Menu' }}</span>
+        <span class="nav__burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav__progress"><span #progress></span></div>
+</header>
+
+<div
+  id="mobile-menu"
+  class="menu"
+  [class.is-open]="menuOpen()"
+  [attr.aria-hidden]="!menuOpen()"
+  [attr.inert]="menuOpen() ? null : ''"
+>
+  <nav class="menu__links container" aria-label="Mobile">
+    @for (s of sections; track s.id; let i = $index) {
+      <a class="menu__link" [style.--i]="i" [attr.href]="'#' + s.id" (click)="go($event, s.id)">
+        <span class="label menu__index">{{ s.index }} — {{ s.layer }}</span>
+        <span class="menu__label">{{ s.label }}</span>
+      </a>
+    }
+  </nav>
+  <div class="menu__foot container">
+    <a class="label link-u" [href]="'mailto:' + site.email">{{ site.email }}</a>
+    <a class="label link-u" [href]="site.github" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  </div>
+</div>
