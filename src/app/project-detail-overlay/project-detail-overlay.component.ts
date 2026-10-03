@@ -74,6 +74,7 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   private backdropAnimation: AnimationPlaybackControls | null = null;
   private origin: DOMRect | null = null;
   private previousFocus: HTMLElement | null = null;
+  private contentTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     effect(() => {
@@ -90,6 +91,7 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.clearContentTimer();
     this.panelAnimation?.stop();
     this.backdropAnimation?.stop();
     if (this.visible()) this.scroll.start();
@@ -126,12 +128,18 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
   }
 
   private openOverlay(originRect: DOMRect): void {
-    this.previousFocus = document.activeElement as HTMLElement | null;
+    // Reopened while the last panel was still closing: it already holds the
+    // scroll lock and the focus to return to, and its close must not finish.
+    const reopening = this.visible();
+    this.panelAnimation?.stop();
+    this.backdropAnimation?.stop();
+    this.clearContentTimer();
+    if (!reopening) this.previousFocus = document.activeElement as HTMLElement | null;
     this.contentVisible.set(false);
     this.detailService.setOverlayOpen(true);
     this.layout.set(this.targetLayout());
     this.visible.set(true);
-    this.scroll.stop();
+    if (!reopening) this.scroll.stop();
 
     afterNextRender(
       () => {
@@ -155,7 +163,7 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
           },
         );
         // Reveal content slightly before the spring fully settles.
-        setTimeout(() => this.contentVisible.set(true), 380);
+        this.contentTimer = setTimeout(() => this.contentVisible.set(true), 380);
         panel.querySelector<HTMLElement>('.ov__close')?.focus({ preventScroll: true });
       },
       { injector: this.injector },
@@ -171,6 +179,7 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
     }
     const target = this.layout() ?? this.targetLayout();
     const from = this.originLayout(this.origin);
+    this.clearContentTimer();
     this.contentVisible.set(false);
     this.backdropAnimation = animate(backdrop, { opacity: 0 }, { duration: 0.45 });
     this.panelAnimation = animate(
@@ -189,6 +198,11 @@ export class ProjectDetailOverlayComponent implements OnDestroy {
     this.scroll.start();
     this.previousFocus?.focus({ preventScroll: true });
     this.previousFocus = null;
+  }
+
+  private clearContentTimer(): void {
+    if (this.contentTimer) clearTimeout(this.contentTimer);
+    this.contentTimer = null;
   }
 
   private morph(from: PanelLayout, to: PanelLayout): string {

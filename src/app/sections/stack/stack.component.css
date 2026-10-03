@@ -264,7 +264,12 @@
   --reveal-delay: calc(0.25s + var(--i, 0) * 0.06s);
   flex-direction: column;
   gap: 0.55rem;
-  cursor: default;
+}
+
+.node--hidden.is-pinned .node__label {
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--fg);
 }
 
 .node__port--hidden {

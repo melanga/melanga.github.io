@@ -15,6 +15,7 @@ import { IntroService } from '../../core/intro.service';
 import { LocalTimeService } from '../../core/local-time.service';
 import { ScrambleDirective } from '../../core/scramble.directive';
 import { SECTIONS, SITE } from '../../core/site.config';
+import { watchMedia } from '../../core/motion.config';
 
 @Component({
   selector: 'app-navbar',
@@ -45,6 +46,7 @@ export class NavbarComponent implements OnDestroy {
   private readonly progressRef = viewChild<ElementRef<HTMLElement>>('progress');
   private removeTick: (() => void) | null = null;
   private removePeek: (() => void) | null = null;
+  private removeWide: (() => void) | null = null;
   private lastY = 0;
   /** Pointer resting near the top edge — reveal the bar even mid-scroll. */
   private peeking = false;
@@ -57,12 +59,17 @@ export class NavbarComponent implements OnDestroy {
       };
       window.addEventListener('pointermove', onMove, { passive: true });
       this.removePeek = () => window.removeEventListener('pointermove', onMove);
+      // Past the breakpoint the menu button is gone, so an open menu could not be closed.
+      this.removeWide = watchMedia('(min-width: 901px)', (wide) => {
+        if (wide) this.closeMenu();
+      });
     });
   }
 
   ngOnDestroy(): void {
     this.removeTick?.();
     this.removePeek?.();
+    this.removeWide?.();
   }
 
   protected go(event: Event, id: string): void {
