@@ -266,6 +266,10 @@
     padding-top: 1.75rem;
   }
 
+  .ov__media-tag {
+    display: none;
+  }
+
   .ov__bar {
     grid-template-columns: 5.5rem minmax(0, 1fr) 2.5rem;
   }

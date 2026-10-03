@@ -155,8 +155,10 @@
   transition: transform 1.4s var(--ease-out);
 }
 
-.feature__media:hover .feature__shot img {
-  transform: scale(1.07);
+@media (hover: hover) {
+  .feature__media:hover .feature__shot img {
+    transform: scale(1.07);
+  }
 }
 
 .feature__shot::after {
@@ -176,9 +178,11 @@
   pointer-events: none;
 }
 
-.feature__media:hover .feature__shot::after {
-  opacity: 1;
-  animation: sweep 1.6s var(--ease-in-out) infinite;
+@media (hover: hover) {
+  .feature__media:hover .feature__shot::after {
+    opacity: 1;
+    animation: sweep 1.6s var(--ease-in-out) infinite;
+  }
 }
 
 @keyframes sweep {
@@ -285,12 +289,10 @@
   transition: transform 0.55s var(--ease-out);
 }
 
-.row:hover::before,
 .row:focus-visible::before {
   transform: scaleY(1);
 }
 
-.row:hover,
 .row:focus-visible {
   color: var(--bg);
 }
@@ -301,8 +303,34 @@
     color 0.3s ease;
 }
 
-.row:hover .row__name {
+.row:focus-visible .row__name {
   transform: translateX(0.75rem);
+}
+
+@media (hover: hover) {
+  .row:hover::before {
+    transform: scaleY(1);
+  }
+
+  .row:hover {
+    color: var(--bg);
+  }
+
+  .row:hover .row__name {
+    transform: translateX(0.75rem);
+  }
+
+  .row:hover .row__no,
+  .row:hover .row__year,
+  .row:hover .row__stack,
+  .row:hover .row__lang {
+    color: color-mix(in srgb, var(--bg) 70%, transparent);
+  }
+
+  .row:hover .row__arrow {
+    transform: rotate(45deg);
+    color: var(--accent);
+  }
 }
 
 .row__no,
@@ -341,10 +369,10 @@
   flex: none;
 }
 
-.row:hover .row__no,
-.row:hover .row__year,
-.row:hover .row__stack,
-.row:hover .row__lang {
+.row:focus-visible .row__no,
+.row:focus-visible .row__year,
+.row:focus-visible .row__stack,
+.row:focus-visible .row__lang {
   color: color-mix(in srgb, var(--bg) 70%, transparent);
 }
 
@@ -353,7 +381,7 @@
   font-size: 1.1rem;
 }
 
-.row:hover .row__arrow {
+.row:focus-visible .row__arrow {
   transform: rotate(45deg);
   color: var(--accent);
 }
@@ -449,6 +477,69 @@
   .feature {
     position: relative;
     top: auto;
+    padding-bottom: 1.25rem;
+  }
+
+  /* Lead with the screenshot; keep each case study within about a screen. */
+  .feature__card {
+    gap: 1.25rem;
+    padding: 0.625rem 0.625rem 1.5rem;
+    border-radius: calc(var(--radius-lg) - 2px);
+  }
+
+  .feature__media {
+    order: -1;
+    border-radius: calc(var(--radius-lg) - 8px);
+  }
+
+  .feature__chrome {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .feature__file {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .feature__info {
+    padding-inline: 0.625rem;
+  }
+
+  .feature__title {
+    padding-top: 1.1rem;
+    font-size: clamp(1.9rem, 1.2rem + 3.2vw, 2.4rem);
+  }
+
+  .feature__desc {
+    margin-top: 0.75rem;
+  }
+
+  .feature__tags {
+    margin-top: 1.1rem;
+  }
+
+  .feature__tags li:nth-child(n + 5) {
+    display: none;
+  }
+
+  .feature__actions {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  /* A taller tap target, with the underline still hugging the text. */
+  .feature__source {
+    padding-block: 0.75rem;
+    background-origin: content-box;
+    white-space: nowrap;
+  }
+
+  .feature__source-long {
+    display: none;
   }
 
   .index__cols {
@@ -456,9 +547,17 @@
   }
 
   .row {
-    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
-    row-gap: 0.35rem;
-    padding: 1.1rem 0;
+    grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+    column-gap: 0.75rem;
+    row-gap: 0.3rem;
+    padding: 1.05rem 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .row:active::before {
+    transform: scaleY(1);
+    background: var(--line-strong);
+    transition-duration: 0.2s;
   }
 
   .row__stack {
@@ -479,5 +578,23 @@
 
   .preview {
     display: none;
+  }
+}
+
+/* Phones get no sticky stack, so case studies rise in with the scroll instead. */
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .feature__card {
+      animation: feature-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+@keyframes feature-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(2.5rem) scale(0.95);
   }
 }

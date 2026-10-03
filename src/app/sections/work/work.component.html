@@ -38,7 +38,8 @@
                   [href]="f.project.htmlUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >Source on GitHub ↗</a
+                  [attr.aria-label]="'Source of ' + f.project.displayName + ' on GitHub'"
+                  >Source<span class="feature__source-long"> on GitHub</span> ↗</a
                 >
               </div>
             </div>

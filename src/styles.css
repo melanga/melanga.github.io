@@ -140,6 +140,12 @@ a {
   text-decoration: none;
 }
 
+/* Interactive elements draw their own pressed states. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--on-accent);
@@ -163,7 +169,9 @@ html.has-cursor * {
   width: 100%;
   max-width: var(--container);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  /* Keep clear of notches and rounded corners in landscape. */
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px))
+    max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 
 .section {
@@ -377,15 +385,32 @@ html.has-cursor * {
   transition: transform 0.6s var(--ease-out);
 }
 
-.btn:hover,
 .btn:focus-visible {
   color: var(--on-accent);
   border-color: var(--accent);
 }
 
-.btn:hover::before,
 .btn:focus-visible::before {
   transform: translateY(0);
+}
+
+/* Touch screens get a press instead of a hover that would stick after the tap.
+   (Fine pointers keep transform free for the magnetic effect.) */
+@media (hover: none) {
+  .btn {
+    transition:
+      color 0.5s var(--ease-out),
+      border-color 0.5s var(--ease-out),
+      transform 0.25s var(--ease-out);
+  }
+
+  .btn:active {
+    transform: scale(0.96);
+  }
+
+  .link-u:active {
+    opacity: 0.6;
+  }
 }
 
 .btn--solid {
@@ -412,12 +437,10 @@ html.has-cursor * {
   transform: translateY(110%);
 }
 
-.btn:hover .btn__roll > span:first-child,
 .btn:focus-visible .btn__roll > span:first-child {
   transform: translateY(-110%);
 }
 
-.btn:hover .btn__roll > span + span,
 .btn:focus-visible .btn__roll > span + span {
   transform: translateY(0);
 }
@@ -428,10 +451,6 @@ html.has-cursor * {
   transition: transform 0.6s var(--ease-out);
 }
 
-.btn:hover .btn__icon {
-  transform: rotate(-45deg);
-}
-
 .link-u {
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0% 1px;
@@ -440,10 +459,37 @@ html.has-cursor * {
   transition: background-size 0.6s var(--ease-out);
 }
 
-.link-u:hover,
 .link-u:focus-visible {
   background-size: 100% 1px;
   background-position: 0% 100%;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    color: var(--on-accent);
+    border-color: var(--accent);
+  }
+
+  .btn:hover::before {
+    transform: translateY(0);
+  }
+
+  .btn:hover .btn__roll > span:first-child {
+    transform: translateY(-110%);
+  }
+
+  .btn:hover .btn__roll > span + span {
+    transform: translateY(0);
+  }
+
+  .btn:hover .btn__icon {
+    transform: rotate(-45deg);
+  }
+
+  .link-u:hover {
+    background-size: 100% 1px;
+    background-position: 0% 100%;
+  }
 }
 
 .chip {

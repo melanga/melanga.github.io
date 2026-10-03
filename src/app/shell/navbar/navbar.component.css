@@ -155,9 +155,17 @@
     transform 0.8s var(--ease-out);
 }
 
-.nav__theme:hover {
-  border-color: var(--fg);
-  transform: rotate(180deg);
+@media (hover: hover) {
+  .nav__theme:hover {
+    border-color: var(--fg);
+    transform: rotate(180deg);
+  }
+}
+
+@media (hover: none) {
+  .nav__theme:active {
+    transform: scale(0.9);
+  }
 }
 
 .nav__theme svg {
@@ -246,7 +254,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding-top: calc(var(--nav-h) + 4vh);
-  padding-bottom: 2.5rem;
+  padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
   background: var(--bg);
   clip-path: inset(0 0 100% 0);
   visibility: hidden;
@@ -317,10 +325,35 @@
   }
 }
 
+/* Small phones: the burger speaks for itself, so the full name fits. */
 @media (max-width: 420px) {
+  .nav__tools {
+    gap: 0.5rem;
+  }
+
+  .nav__menu-btn {
+    justify-content: center;
+    min-width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .nav__menu-btn .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
   .nav__name {
-    max-width: 9.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 340px) {
+  .nav__surname {
+    display: none;
   }
 }

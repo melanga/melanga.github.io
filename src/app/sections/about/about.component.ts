@@ -27,14 +27,16 @@ interface Detection {
   readonly w: number;
   readonly h: number;
   readonly tone: 'accent' | 'fg' | 'muted';
+  /** Hang the label from the box's right edge (boxes near the frame's right side). */
+  readonly alignEnd?: boolean;
 }
 
 /** Bounding boxes over the photo, in % of the frame. */
 const DETECTIONS: readonly Detection[] = [
   { label: 'person', score: '0.99', x: 25, y: 13, w: 55, h: 87, tone: 'fg' },
   { label: 'face · melanga', score: '0.98', x: 55, y: 20, w: 19, h: 37, tone: 'accent' },
-  { label: 'cloud', score: '0.91', x: 3, y: 4, w: 30, h: 24, tone: 'muted' },
-  { label: 'valley', score: '0.87', x: 81, y: 56, w: 17, h: 32, tone: 'muted' },
+  { label: 'cloud', score: '0.91', x: 3, y: 8, w: 30, h: 22, tone: 'muted' },
+  { label: 'valley', score: '0.87', x: 81, y: 56, w: 17, h: 32, tone: 'muted', alignEnd: true },
 ];
 
 @Component({

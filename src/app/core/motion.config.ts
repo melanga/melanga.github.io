@@ -42,6 +42,33 @@ export function hasFinePointer(): boolean {
   }
 }
 
+export function mediaMatches(query: string): boolean {
+  if (!isBrowser() || typeof window.matchMedia !== 'function') {
+    return false;
+  }
+  try {
+    return window.matchMedia(query).matches;
+  } catch {
+    return false;
+  }
+}
+
+/** Reports a media query's state now and on every change; returns a stop function. */
+export function watchMedia(query: string, onChange: (matches: boolean) => void): () => void {
+  if (!isBrowser() || typeof window.matchMedia !== 'function') {
+    return () => undefined;
+  }
+  try {
+    const mql = window.matchMedia(query);
+    const handler = (e: MediaQueryListEvent): void => onChange(e.matches);
+    onChange(mql.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  } catch {
+    return () => undefined;
+  }
+}
+
 export function resolveTransition(
   spring: ValueAnimationTransition<number>,
 ): ValueAnimationTransition<number> {

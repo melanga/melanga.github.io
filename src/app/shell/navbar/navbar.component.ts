@@ -34,6 +34,9 @@ export class NavbarComponent implements OnDestroy {
   private readonly ticker = inject(TickerService);
 
   protected readonly site = SITE;
+  /** The surname folds away on the narrowest phones. */
+  protected readonly firstName = SITE.name.split(' ')[0];
+  protected readonly surname = SITE.name.slice(this.firstName.length);
   protected readonly sections = SECTIONS;
   protected readonly hidden = signal(false);
   protected readonly scrolled = signal(false);
