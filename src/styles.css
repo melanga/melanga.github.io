@@ -597,6 +597,48 @@ html.js:not(.reduced-motion) [data-reveal='clip'] {
   }
 }
 
+/* ---------- Scroll-driven motion on touch screens ----------
+   Native touch scrolling runs ahead of the main thread, so per-frame JS
+   transforms trail the page (most visibly in iOS Safari). These run on the
+   compositor instead. They live here because Angular renames component
+   keyframes but not references nested in @media/@supports. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    /* The hero drifts and dissolves as you leave it (the mouse version is ticker-driven). */
+    @media (hover: none) {
+      .hero__inner {
+        animation: hero-drift linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 85vh;
+      }
+    }
+
+    /* Phones get no sticky stack, so case studies rise in with the scroll instead. */
+    @media (max-width: 760px) {
+      .feature__card {
+        animation: feature-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
+    }
+  }
+}
+
+@keyframes hero-drift {
+  to {
+    transform: translate3d(0, 23.8vh, 0);
+    opacity: 0.05;
+  }
+}
+
+@keyframes feature-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(2.5rem) scale(0.95);
+  }
+}
+
 /* ---------- Motion preferences ---------- */
 
 @media (prefers-reduced-motion: reduce) {

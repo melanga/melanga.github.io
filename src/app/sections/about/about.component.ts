@@ -16,7 +16,7 @@ import { SectionHeadComponent } from '../../shared/section-head/section-head.com
 import { SmoothScrollService } from '../../core/smooth-scroll.service';
 import { TickerService } from '../../core/ticker.service';
 import { PortfolioDataStore } from '../../core/portfolio-data.store';
-import { prefersReducedMotion } from '../../core/motion.config';
+import { hasFinePointer, prefersReducedMotion } from '../../core/motion.config';
 import { SITE } from '../../core/site.config';
 
 interface Detection {
@@ -66,6 +66,8 @@ export class AboutComponent implements OnDestroy {
   private words: HTMLElement[] = [];
   private wordLevels: number[] = [];
   private teardown: (() => void)[] = [];
+  /** The photo parallax is a per-frame transform, which trails native touch scrolling. */
+  private parallax = false;
 
   constructor() {
     afterNextRender(() => this.init());
@@ -83,6 +85,7 @@ export class AboutComponent implements OnDestroy {
     }
 
     this.teardown.push(inView(figure, () => this.scanned.set(true), { amount: 0.35 }));
+    this.parallax = hasFinePointer();
     this.splitStatement();
     this.teardown.push(this.ticker.add(() => this.frame(), 40));
   }
@@ -138,6 +141,7 @@ export class AboutComponent implements OnDestroy {
     }
 
     // Photo: slow inner parallax.
+    if (!this.parallax) return;
     const fig = this.figureRef().nativeElement.getBoundingClientRect();
     if (fig.bottom > 0 && fig.top < vh) {
       const centre = (fig.top + fig.height / 2 - vh / 2) / vh;

@@ -580,21 +580,3 @@
     display: none;
   }
 }
-
-/* Phones get no sticky stack, so case studies rise in with the scroll instead. */
-@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .feature__card {
-      animation: feature-in linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
-  }
-}
-
-@keyframes feature-in {
-  from {
-    opacity: 0.3;
-    transform: translateY(2.5rem) scale(0.95);
-  }
-}

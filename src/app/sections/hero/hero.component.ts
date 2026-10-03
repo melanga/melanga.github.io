@@ -18,7 +18,7 @@ import { TickerService } from '../../core/ticker.service';
 import { IntroService } from '../../core/intro.service';
 import { LocalTimeService } from '../../core/local-time.service';
 import { scrambleText } from '../../core/scramble';
-import { prefersReducedMotion } from '../../core/motion.config';
+import { hasFinePointer, prefersReducedMotion } from '../../core/motion.config';
 import { SITE } from '../../core/site.config';
 
 const ROLE_INTERVAL_MS = 3400;
@@ -47,7 +47,10 @@ export class HeroComponent implements OnDestroy {
 
   constructor() {
     afterNextRender(() => {
-      if (!prefersReducedMotion()) {
+      // Touch screens scroll natively, ahead of the main thread, so a per-frame
+      // transform trails the page (most visibly in iOS Safari). There the drift
+      // is a CSS scroll-driven animation instead (see hero.component.css).
+      if (!prefersReducedMotion() && hasFinePointer()) {
         this.removeTick = this.ticker.add(() => this.parallax(), 40);
       }
     });
