@@ -320,7 +320,9 @@ export class SignalFieldComponent implements OnDestroy {
   }
 
   private bindEvents(canvas: HTMLCanvasElement): void {
+    // Repulsion, tilt and the click ripple follow a mouse only; touches just scroll.
     const onMove = (e: PointerEvent): void => {
+      if (e.pointerType !== 'mouse') return;
       this.mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
       this.mouse.ty = -((e.clientY / window.innerHeight) * 2 - 1);
       this.mouse.target = 1;
@@ -329,6 +331,7 @@ export class SignalFieldComponent implements OnDestroy {
       this.mouse.target = 0;
     };
     const onDown = (e: PointerEvent): void => {
+      if (e.pointerType !== 'mouse') return;
       onMove(e);
       if (!this.reducedMotion) this.scatter = Math.min(0.55, this.scatter + 0.32);
     };
