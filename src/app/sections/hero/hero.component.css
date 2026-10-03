@@ -9,6 +9,11 @@
   padding-bottom: 8.5rem;
 }
 
+.hero__slot {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .hero__inner {
   position: relative;
   will-change: transform, opacity;
@@ -129,7 +134,27 @@
 
 @media (max-width: 760px) {
   .hero {
+    padding-top: var(--nav-h);
     padding-bottom: 10.5rem;
+  }
+
+  .hero__eyebrow {
+    margin-bottom: 1rem;
+  }
+
+  .hero__body {
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .hero__ctas {
+    width: 100%;
+  }
+
+  .hero__ctas .btn {
+    flex: 1 1 0;
+    justify-content: center;
+    padding-inline: 1rem;
   }
 
   .hero__stats {
@@ -143,5 +168,24 @@
 
   .hero__stats > div:nth-child(3) {
     grid-column: span 2;
+  }
+}
+
+/* The narrowest phones: keep "Dissanayake." on one line. */
+@media (max-width: 359px) {
+  .hero__name {
+    font-size: 15.2vw;
+  }
+}
+
+/* Short phones: drop the stats (they repeat in About and Contact) so the
+   portrait keeps its slot above the name. */
+@media (max-width: 760px) and (max-height: 720px) {
+  .hero {
+    padding-bottom: 2.25rem;
+  }
+
+  .hero__readout {
+    display: none;
   }
 }

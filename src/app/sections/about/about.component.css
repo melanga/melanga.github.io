@@ -131,6 +131,11 @@
   font-weight: 600;
 }
 
+.det--end .det__label {
+  left: auto;
+  right: -1px;
+}
+
 .about__caption {
   display: flex;
   justify-content: space-between;

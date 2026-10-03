@@ -8,141 +8,322 @@
       </h2>
       <p class="lead stack__lead" appReveal="rise" [revealDelay]="120">
         Every technology I work with, wired to the projects it powers — weights pulled live from
-        GitHub. Hover a node to trace its signal. Select a technology to filter the work below.
+        GitHub.
+        @if (compact()) {
+          Tap a technology to trace its signal and filter the work below.
+        } @else {
+          Hover a node to trace its signal. Select a technology to filter the work below.
+        }
       </p>
     </div>
 
-    <div
-      class="net"
-      #net
-      [class.is-inview]="inView()"
-      [class.has-focus]="!!active()"
-      [class.is-loading]="store.loading()"
-    >
-      <span class="net__legend label" aria-hidden="true">Inputs · technologies</span>
-      <span class="net__legend net__legend--mid label" aria-hidden="true">Hidden · domains</span>
-      <span class="net__legend net__legend--end label" aria-hidden="true">Outputs · projects</span>
-
-      <svg
-        class="net__edges"
-        [attr.viewBox]="'0 0 ' + size().w + ' ' + size().h"
-        [attr.width]="size().w"
-        [attr.height]="size().h"
-        aria-hidden="true"
+    @if (compact()) {
+      <!-- Compact: the forward pass runs top to bottom. -->
+      <div
+        class="mnet"
+        #mnet
+        [class.is-inview]="inView()"
+        [class.has-focus]="!!active()"
+        [class.is-loading]="store.loading()"
       >
-        @for (l of drawn(); track l.id) {
-          <path
-            class="edge"
-            [class.edge--l1]="l.layer === 1"
-            [class.is-lit]="isLinkLit(l.id)"
-            [attr.d]="l.d"
-            pathLength="1"
-            [style.--w]="l.weight"
-          />
-        }
-        @for (l of drawn(); track l.id) {
-          <path
-            class="pulse"
-            [class.pulse--l1]="l.layer === 1"
-            [class.is-lit]="isLinkLit(l.id)"
-            [attr.d]="l.d"
-            pathLength="1"
-            [style.--pd]="l.pulseDelay + l.layer * 600 + 'ms'"
-            [style.--pt]="l.pulseDuration + 'ms'"
-          />
-        }
-      </svg>
+        <ng-container [ngTemplateOutlet]="readoutTpl" />
 
-      <div class="net__col net__col--in" role="group" aria-label="Technologies">
-        @if (store.loading()) {
-          @for (s of [1, 2, 3, 4, 5, 6, 7, 8]; track s) {
-            <span class="node-skeleton"></span>
-          }
-        }
-        @for (n of inputs(); track n.id; let i = $index) {
-          <button
-            type="button"
-            class="node node--in"
-            [style.--i]="i"
-            [class.is-lit]="isLit(n.id)"
-            [class.is-selected]="filter.selectedTag() === n.label"
-            [attr.aria-pressed]="filter.selectedTag() === n.label"
-            [attr.data-cursor]="filter.selectedTag() === n.label ? 'clear filter' : 'filter'"
-            (pointerenter)="setHover('input', n.id)"
-            (pointerleave)="clearHover()"
-            (focus)="setHover('input', n.id)"
-            (blur)="clearHover()"
-            (click)="toggleTech(n.label)"
-          >
-            <span class="node__label">{{ n.label }}</span>
-            <span class="node__count">{{ n.count }}</span>
-            <span class="node__port" [attr.data-port]="n.id"></span>
-          </button>
-        }
-      </div>
-
-      <div class="net__col net__col--hidden" aria-hidden="true">
-        @for (n of hidden(); track n.id; let i = $index) {
-          <div
-            class="node node--hidden"
-            [style.--i]="i"
-            [style.--size]="n.size"
-            [class.is-lit]="isLit(n.id)"
-            (pointerenter)="setHover('hidden', n.id)"
-            (pointerleave)="clearHover()"
-          >
-            <span class="node__port node__port--hidden" [attr.data-port]="n.id"></span>
-            <span class="node__label">{{ n.label }}</span>
-          </div>
-        }
-      </div>
-
-      <div class="net__col net__col--out" role="group" aria-label="Projects">
-        @for (n of outputs(); track n.id; let i = $index) {
-          <button
-            type="button"
-            class="node node--out"
-            [style.--i]="i"
-            [class.is-lit]="isLit(n.id)"
-            [attr.aria-label]="'Open details for ' + n.label"
-            data-cursor="open"
-            (pointerenter)="setHover('output', n.id)"
-            (pointerleave)="clearHover()"
-            (focus)="setHover('output', n.id)"
-            (blur)="clearHover()"
-            (click)="openProject(n, $event)"
-          >
-            <span class="node__port" [attr.data-port]="n.id"></span>
-            <span class="node__text">
-              <span class="node__label">{{ n.label }}</span>
-              @if (n.lang) {
-                <span class="node__meta"><i [style.background]="n.color"></i>{{ n.lang }}</span>
+        <div class="mnet__layer">
+          <p class="mnet__legend">
+            <span class="label">Input layer</span>
+            <span class="label mnet__legend-meta">{{ inputs().length }} technologies</span>
+          </p>
+          <div class="mnet__chips" role="group" aria-label="Technologies">
+            @if (store.loading()) {
+              @for (s of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track s) {
+                <span class="tech-skeleton"></span>
               }
-            </span>
-          </button>
-        }
-      </div>
-    </div>
+            }
+            @for (n of compactInputs(); track n.id; let i = $index) {
+              <button
+                type="button"
+                class="tech"
+                [style.--i]="i"
+                [class.is-lit]="isLit(n.id)"
+                [class.is-selected]="filter.selectedTag() === n.label"
+                [attr.aria-pressed]="filter.selectedTag() === n.label"
+                (focus)="setHover('input', n.id)"
+                (blur)="clearHover()"
+                (click)="toggleTech(n.label)"
+              >
+                <span class="tech__dot" aria-hidden="true"></span>
+                <span class="tech__label">{{ n.label }}</span>
+                <span class="tech__count">{{ n.count }}</span>
+              </button>
+            }
+          </div>
+        </div>
 
-    <div class="readout" aria-live="polite">
-      @if (readout(); as r) {
-        <span class="label readout__kind">{{ r.kind === 'input' ? 'Input' : r.kind === 'hidden' ? 'Hidden unit' : 'Output' }}</span>
-        <span class="readout__path">
-          <b>{{ r.title }}</b>
-          @for (step of r.path; track $index) {
-            <span class="readout__arrow" aria-hidden="true">{{ r.kind === 'output' ? '←' : '→' }}</span>
-            <span>{{ step }}</span>
+        <div
+          class="mgraph"
+          #graphEl
+          [class.is-inview]="graphInView()"
+          [style.height.px]="graph()?.h ?? 270"
+          role="group"
+          aria-label="Hidden layer — domains"
+        >
+          @if (graph(); as g) {
+            <svg
+              class="mgraph__svg"
+              [attr.viewBox]="'0 0 ' + g.w + ' ' + g.h"
+              [attr.width]="g.w"
+              [attr.height]="g.h"
+              aria-hidden="true"
+            >
+              @for (l of g.links; track l.id) {
+                <path
+                  class="edge"
+                  [class.edge--l1]="l.layer === 1"
+                  [class.is-lit]="isLinkLit(l.id)"
+                  [attr.d]="l.d"
+                  pathLength="1"
+                  [style.--w]="l.weight"
+                />
+              }
+              @for (l of g.links; track l.id) {
+                <path
+                  class="pulse"
+                  [class.pulse--l1]="l.layer === 1"
+                  [class.is-lit]="isLinkLit(l.id)"
+                  [attr.d]="l.d"
+                  pathLength="1"
+                  [style.--pd]="l.pulseDelay + l.layer * 600 + 'ms'"
+                  [style.--pt]="l.pulseDuration + 'ms'"
+                />
+              }
+              @for (n of g.inputs; track n.id; let i = $index) {
+                <circle
+                  class="mdot"
+                  [class.is-lit]="isLit(n.id)"
+                  [class.is-selected]="'i:' + filter.selectedTag() === n.id"
+                  [attr.cx]="n.x"
+                  [attr.cy]="n.y"
+                  r="3.5"
+                  [style.--i]="i"
+                />
+              }
+              @for (n of g.outputs; track n.id; let i = $index) {
+                <circle
+                  class="mdot mdot--out"
+                  [class.is-lit]="isLit(n.id)"
+                  [attr.cx]="n.x"
+                  [attr.cy]="n.y"
+                  r="4"
+                  [style.--i]="i"
+                />
+                <text
+                  class="mgraph__index"
+                  [class.is-lit]="isLit(n.id)"
+                  [attr.x]="n.x"
+                  [attr.y]="n.y + 21"
+                  [style.--i]="i"
+                >{{ n.index }}</text>
+              }
+            </svg>
+
+            @for (h of g.hidden; track h.id; let i = $index) {
+              <button
+                type="button"
+                class="unit"
+                [style.left.px]="h.x"
+                [style.top.px]="g.unitTop"
+                [style.width.px]="g.unitWidth"
+                [style.height.px]="g.unitHeight"
+                [style.--r.px]="h.r"
+                [style.--rmax.px]="g.rMax"
+                [style.--drop.px]="h.drop"
+                [style.--i]="i"
+                [class.is-lit]="isLit(h.id)"
+                [class.is-pinned]="pinned()?.id === h.id"
+                [attr.aria-pressed]="pinned()?.id === h.id"
+                [attr.aria-label]="h.label + ' — ' + h.size + (h.size === 1 ? ' technology' : ' technologies')"
+                (click)="togglePin(h.id)"
+              >
+                <span class="unit__core" aria-hidden="true"></span>
+                <span class="unit__label" aria-hidden="true">
+                  @for (line of h.lines; track $index) {
+                    <span>{{ line }}</span>
+                  }
+                </span>
+              </button>
+            }
           }
-        </span>
-        @if (r.tech && r.matches > 0) {
-          <button type="button" class="readout__cta label" (click)="showMatches(r.tech)" data-cursor="scroll">
-            Show in work ↓
-          </button>
-        }
-      } @else {
-        <span class="label readout__kind">Idle</span>
-        <span class="readout__hint">Waiting for input — hover or tap a node.</span>
-      }
-    </div>
+        </div>
+
+        <div class="mnet__layer">
+          <p class="mnet__legend">
+            <span class="label">Output layer</span>
+            <span class="label mnet__legend-meta">{{ outputs().length }} projects</span>
+          </p>
+          <ol class="mnet__outputs">
+            @for (n of outputs(); track n.id; let i = $index) {
+              <li>
+                <button
+                  type="button"
+                  class="oput"
+                  [style.--i]="i"
+                  [class.is-lit]="isLit(n.id)"
+                  [attr.aria-label]="'Open details for ' + n.label"
+                  (focus)="setHover('output', n.id)"
+                  (blur)="clearHover()"
+                  (click)="openProject(n, $event)"
+                >
+                  <span class="oput__index">{{ pad(i + 1) }}</span>
+                  <span class="oput__name">{{ n.label }}</span>
+                  @if (n.lang) {
+                    <span class="oput__lang"><i [style.background]="n.color"></i>{{ n.lang }}</span>
+                  }
+                  <span class="oput__arrow" aria-hidden="true">↗</span>
+                </button>
+              </li>
+            }
+          </ol>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="net"
+        #net
+        [class.is-inview]="inView()"
+        [class.has-focus]="!!active()"
+        [class.is-loading]="store.loading()"
+      >
+        <span class="net__legend label" aria-hidden="true">Inputs · technologies</span>
+        <span class="net__legend net__legend--mid label" aria-hidden="true">Hidden · domains</span>
+        <span class="net__legend net__legend--end label" aria-hidden="true">Outputs · projects</span>
+
+        <svg
+          class="net__edges"
+          [attr.viewBox]="'0 0 ' + size().w + ' ' + size().h"
+          [attr.width]="size().w"
+          [attr.height]="size().h"
+          aria-hidden="true"
+        >
+          @for (l of drawn(); track l.id) {
+            <path
+              class="edge"
+              [class.edge--l1]="l.layer === 1"
+              [class.is-lit]="isLinkLit(l.id)"
+              [attr.d]="l.d"
+              pathLength="1"
+              [style.--w]="l.weight"
+            />
+          }
+          @for (l of drawn(); track l.id) {
+            <path
+              class="pulse"
+              [class.pulse--l1]="l.layer === 1"
+              [class.is-lit]="isLinkLit(l.id)"
+              [attr.d]="l.d"
+              pathLength="1"
+              [style.--pd]="l.pulseDelay + l.layer * 600 + 'ms'"
+              [style.--pt]="l.pulseDuration + 'ms'"
+            />
+          }
+        </svg>
+
+        <div class="net__col net__col--in" role="group" aria-label="Technologies">
+          @if (store.loading()) {
+            @for (s of [1, 2, 3, 4, 5, 6, 7, 8]; track s) {
+              <span class="node-skeleton"></span>
+            }
+          }
+          @for (n of inputs(); track n.id; let i = $index) {
+            <button
+              type="button"
+              class="node node--in"
+              [style.--i]="i"
+              [class.is-lit]="isLit(n.id)"
+              [class.is-selected]="filter.selectedTag() === n.label"
+              [attr.aria-pressed]="filter.selectedTag() === n.label"
+              [attr.data-cursor]="filter.selectedTag() === n.label ? 'clear filter' : 'filter'"
+              (pointerenter)="setHover('input', n.id)"
+              (pointerleave)="clearHover()"
+              (focus)="setHover('input', n.id)"
+              (blur)="clearHover()"
+              (click)="toggleTech(n.label)"
+            >
+              <span class="node__label">{{ n.label }}</span>
+              <span class="node__count">{{ n.count }}</span>
+              <span class="node__port" [attr.data-port]="n.id"></span>
+            </button>
+          }
+        </div>
+
+        <div class="net__col net__col--hidden" aria-hidden="true">
+          @for (n of hidden(); track n.id; let i = $index) {
+            <div
+              class="node node--hidden"
+              [style.--i]="i"
+              [style.--size]="n.size"
+              [class.is-lit]="isLit(n.id)"
+              (pointerenter)="setHover('hidden', n.id)"
+              (pointerleave)="clearHover()"
+            >
+              <span class="node__port node__port--hidden" [attr.data-port]="n.id"></span>
+              <span class="node__label">{{ n.label }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="net__col net__col--out" role="group" aria-label="Projects">
+          @for (n of outputs(); track n.id; let i = $index) {
+            <button
+              type="button"
+              class="node node--out"
+              [style.--i]="i"
+              [class.is-lit]="isLit(n.id)"
+              [attr.aria-label]="'Open details for ' + n.label"
+              data-cursor="open"
+              (pointerenter)="setHover('output', n.id)"
+              (pointerleave)="clearHover()"
+              (focus)="setHover('output', n.id)"
+              (blur)="clearHover()"
+              (click)="openProject(n, $event)"
+            >
+              <span class="node__port" [attr.data-port]="n.id"></span>
+              <span class="node__text">
+                <span class="node__label">{{ n.label }}</span>
+                @if (n.lang) {
+                  <span class="node__meta"><i [style.background]="n.color"></i>{{ n.lang }}</span>
+                }
+              </span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <ng-container [ngTemplateOutlet]="readoutTpl" />
+    }
   </div>
 </section>
+
+<ng-template #readoutTpl>
+  <div class="readout" aria-live="polite">
+    @if (readout(); as r) {
+      <span class="label readout__kind">{{ r.kind === 'input' ? 'Input' : r.kind === 'hidden' ? 'Hidden unit' : 'Output' }}</span>
+      <span class="readout__path">
+        <b>{{ r.title }}</b>
+        @for (step of r.path; track $index) {
+          <span class="readout__arrow" aria-hidden="true">{{ r.kind === 'output' ? '←' : '→' }}</span>
+          <span>{{ step }}</span>
+        }
+      </span>
+      @if (r.tech && r.matches > 0) {
+        <button type="button" class="readout__cta label" (click)="showMatches(r.tech)" data-cursor="scroll">
+          Show in work ↓
+        </button>
+      }
+    } @else {
+      <span class="label readout__kind">Idle</span>
+      <span class="readout__hint">
+        {{ compact() ? 'Waiting for input — tap a technology or a domain.' : 'Waiting for input — hover or tap a node.' }}
+      </span>
+    }
+  </div>
+</ng-template>

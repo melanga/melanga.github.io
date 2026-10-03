@@ -74,7 +74,7 @@ function layoutFor(state: number, aspect: number): StateLayout {
     case FieldState.Portrait:
       return wide
         ? { x: aspect * 0.47, y: -0.13, sx: 1.78, sy: 1.78, sz: 1.78, alpha: 1 }
-        : { x: 0.02, y: -0.42, sx: 1.25, sy: 1.25, sz: 1.25, alpha: 0.5 };
+        : { x: 0.02, y: -0.42, sx: 1.25, sy: 1.25, sz: 1.25, alpha: 0.38 };
     case FieldState.Wave:
       return wide
         ? { x: 0, y: -0.6, sx: aspect * 1.08, sy: 0.32, sz: 0.6, alpha: 0.7 }
@@ -86,9 +86,10 @@ function layoutFor(state: number, aspect: number): StateLayout {
     case FieldState.Terrain:
       return { x: 0, y: -0.82, sx: aspect * 1.4, sy: 0.4, sz: 1.5, alpha: wide ? 0.55 : 0.4 };
     default:
+      // Narrow screens: a smaller island off to the right, beside the location details.
       return wide
         ? { x: aspect * 0.52, y: 0.02, sx: 1.55, sy: 1.55, sz: 1, alpha: 0.95 }
-        : { x: 0, y: 0.42, sx: 0.9, sy: 0.9, sz: 1, alpha: 0.4 };
+        : { x: aspect * 0.5, y: -0.34, sx: 0.68, sy: 0.68, sz: 1, alpha: 0.6 };
   }
 }
 
@@ -343,8 +344,10 @@ export class SignalFieldComponent implements OnDestroy {
     window.addEventListener('resize', onResize, { passive: true });
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined') {
-      ro = new ResizeObserver(() => this.measureAnchors());
+      ro = new ResizeObserver(() => this.refreshLayout());
       ro.observe(document.body);
+      const slot = document.querySelector('[data-field-slot]');
+      if (slot) ro.observe(slot);
     }
 
     const onLost = (e: Event): void => e.preventDefault();
@@ -371,8 +374,34 @@ export class SignalFieldComponent implements OnDestroy {
       canvas.height = h;
     }
     this.aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+    this.refreshLayout();
+  }
+
+  /** Where each embedding sits for this viewport, and the scroll anchors that drive them. */
+  private refreshLayout(): void {
     this.layouts = Array.from({ length: FIELD_STATE_COUNT }, (_, i) => layoutFor(i, this.aspect));
+    const slotted = this.portraitInSlot();
+    if (slotted) this.layouts[FieldState.Portrait] = slotted;
     this.measureAnchors();
+  }
+
+  /**
+   * On portrait screens the hero leaves a slot above the name, and the portrait
+   * is drawn into it rather than behind the text. Too short a slot keeps the backdrop.
+   */
+  private portraitInSlot(): StateLayout | null {
+    if (this.aspect >= 1) return null;
+    const slot = document.querySelector<HTMLElement>('[data-field-slot="portrait"]');
+    const canvasH = this.canvasRef().nativeElement.clientHeight;
+    if (!slot || !canvasH) return null;
+    const h = slot.offsetHeight;
+    if (h < canvasH * 0.22) return null;
+    // The density map is one unit tall and ~1.1 wide; the head starts ~13% down,
+    // so nudge it up to centre the silhouette rather than the map.
+    const fit = Math.min(h * 1.04, (window.innerWidth - 24) / 1.12);
+    const s = (fit / canvasH) * 2;
+    const centre = absoluteTop(slot) + h / 2;
+    return { x: 0, y: 1 - (centre / canvasH) * 2 + s * 0.06, sx: s, sy: s, sz: s, alpha: 1 };
   }
 
   /** Each `[data-field-state]` section pulls the field into its embedding as it scrolls in. */

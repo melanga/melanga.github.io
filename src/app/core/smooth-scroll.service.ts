@@ -142,7 +142,9 @@ export class SmoothScrollService implements OnDestroy {
       return;
     }
 
-    const top = el ? el.getBoundingClientRect().top + window.scrollY + offset : Number(target);
+    // Match Lenis, which honours the target's scroll-margin.
+    const margin = el ? Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0 : 0;
+    const top = el ? el.getBoundingClientRect().top + window.scrollY - margin + offset : Number(target);
     window.scrollTo({ top, behavior: 'auto' });
   }
 

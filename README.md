@@ -25,7 +25,9 @@ Other pieces:
   confidence score, around anything interactive.
 - **The stack as a neural network**: technologies (inputs) → domains (hidden layer) →
   projects (outputs), built from live GitHub data. Hover to trace activations; select an
-  input to filter the work index.
+  input to filter the work index. On phones the network turns vertical and the forward
+  pass runs top to bottom: technology chips, then the wired graph (tap a domain to trace
+  it), then the numbered project list.
 - **Scroll-focused statement**: About text comes into focus word by word as you read.
 - **Generative fingerprints**: repositories without screenshots get a flow-field cover
   seeded by the repo name.
