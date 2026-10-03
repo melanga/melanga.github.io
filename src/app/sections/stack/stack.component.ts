@@ -353,8 +353,22 @@ export class StackComponent implements OnDestroy {
     return this.active()?.links.has(id) ?? false;
   }
 
-  protected setHover(kind: Focus['kind'], id: string): void {
-    this.hover.set({ kind, id });
+  /** Hover tracing is for mice and pens: a touch fires enter and leave around every tap. */
+  protected pointerEnter(event: PointerEvent, kind: Focus['kind'], id: string): void {
+    if (event.pointerType !== 'touch') this.hover.set({ kind, id });
+  }
+
+  protected pointerLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'touch') this.hover.set(null);
+  }
+
+  /**
+   * Keyboard focus traces like hover. Focus from a tap or click (or restored by
+   * the project overlay) must not, or it outranks every later selection until blur.
+   */
+  protected focusIn(event: FocusEvent, kind: Focus['kind'], id: string): void {
+    const el = event.target as HTMLElement;
+    if (typeof el.matches !== 'function' || el.matches(':focus-visible')) this.hover.set({ kind, id });
   }
 
   protected clearHover(): void {
@@ -367,6 +381,8 @@ export class StackComponent implements OnDestroy {
   }
 
   protected togglePin(id: string): void {
+    // A trace left on another node would hide the unit just selected.
+    if (this.hover()?.id !== id) this.hover.set(null);
     this.pinned.set(this.pinned()?.id === id ? null : { kind: 'hidden', id });
   }
 

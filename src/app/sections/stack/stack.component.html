@@ -47,7 +47,7 @@
                 [class.is-lit]="isLit(n.id)"
                 [class.is-selected]="filter.selectedTag() === n.label"
                 [attr.aria-pressed]="filter.selectedTag() === n.label"
-                (focus)="setHover('input', n.id)"
+                (focus)="focusIn($event, 'input', n.id)"
                 (blur)="clearHover()"
                 (click)="toggleTech(n.label)"
               >
@@ -169,7 +169,7 @@
                   [style.--i]="i"
                   [class.is-lit]="isLit(n.id)"
                   [attr.aria-label]="'Open details for ' + n.label"
-                  (focus)="setHover('output', n.id)"
+                  (focus)="focusIn($event, 'output', n.id)"
                   (blur)="clearHover()"
                   (click)="openProject(n, $event)"
                 >
@@ -242,9 +242,9 @@
               [class.is-selected]="filter.selectedTag() === n.label"
               [attr.aria-pressed]="filter.selectedTag() === n.label"
               [attr.data-cursor]="filter.selectedTag() === n.label ? 'clear filter' : 'filter'"
-              (pointerenter)="setHover('input', n.id)"
-              (pointerleave)="clearHover()"
-              (focus)="setHover('input', n.id)"
+              (pointerenter)="pointerEnter($event, 'input', n.id)"
+              (pointerleave)="pointerLeave($event)"
+              (focus)="focusIn($event, 'input', n.id)"
               (blur)="clearHover()"
               (click)="toggleTech(n.label)"
             >
@@ -255,19 +255,26 @@
           }
         </div>
 
-        <div class="net__col net__col--hidden" aria-hidden="true">
+        <div class="net__col net__col--hidden" role="group" aria-label="Domains">
           @for (n of hidden(); track n.id; let i = $index) {
-            <div
+            <button
+              type="button"
               class="node node--hidden"
               [style.--i]="i"
               [style.--size]="n.size"
               [class.is-lit]="isLit(n.id)"
-              (pointerenter)="setHover('hidden', n.id)"
-              (pointerleave)="clearHover()"
+              [class.is-pinned]="pinned()?.id === n.id"
+              [attr.aria-pressed]="pinned()?.id === n.id"
+              [attr.data-cursor]="pinned()?.id === n.id ? 'unpin' : 'pin'"
+              (pointerenter)="pointerEnter($event, 'hidden', n.id)"
+              (pointerleave)="pointerLeave($event)"
+              (focus)="focusIn($event, 'hidden', n.id)"
+              (blur)="clearHover()"
+              (click)="togglePin(n.id)"
             >
               <span class="node__port node__port--hidden" [attr.data-port]="n.id"></span>
               <span class="node__label">{{ n.label }}</span>
-            </div>
+            </button>
           }
         </div>
 
@@ -280,9 +287,9 @@
               [class.is-lit]="isLit(n.id)"
               [attr.aria-label]="'Open details for ' + n.label"
               data-cursor="open"
-              (pointerenter)="setHover('output', n.id)"
-              (pointerleave)="clearHover()"
-              (focus)="setHover('output', n.id)"
+              (pointerenter)="pointerEnter($event, 'output', n.id)"
+              (pointerleave)="pointerLeave($event)"
+              (focus)="focusIn($event, 'output', n.id)"
               (blur)="clearHover()"
               (click)="openProject(n, $event)"
             >
